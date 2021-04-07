@@ -1,1 +1,5 @@
 # Missing values
+
+# missing values in CO2 col - maybe fill with avg for other similar projects?
+sum(is.na(energy_efficiency_project_data$*CO2 col*))
+

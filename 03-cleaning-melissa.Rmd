@@ -1,0 +1,10 @@
+# Data transformation
+ev_charging_data = read.csv("melissa_data_sets/Electric_Vehicle_Charging_Stations_in_New_York.csv")
+emissons_from_fuel_data = read.csv("melissa_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
+clean_rebate_data = read.csv("melissa_data_sets/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
+energy_programs_data = read.csv("melissa_data_sets/NY_Clean_Energy_Dashboard_Programs_Progress_and_Plans__Beginning_January_2016.csv")
+recycling_data = read.csv("melissa_data_sets/Recycling_Diversion_and_Capture_Rates.csv")
+energy_efficiency_project_data = read.csv("melissa_data_sets/Energy_Efficiency_Projects.csv")
+greenhouse_emissions_data = read.csv("melissa_data_sets/New_York_City_Greenhouse_Gas_Emissions_Electricity_Emission_Factors_2005_2016_.csv")
+fuel_emission_factors_data = read.csv("melissa_data_sets/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
+

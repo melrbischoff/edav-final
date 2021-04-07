@@ -1,6 +1,6 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAMES HERE"
+title: "TITLE"
+author: "Melissa Bischoff & George Reynolds"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
