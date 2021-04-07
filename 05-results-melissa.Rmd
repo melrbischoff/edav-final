@@ -13,7 +13,7 @@ library(tidyverse)
 library(ggmap)
 
 # maybe map EV charging data in d3
-<!-- register_google(key = "-ofFZBk89N3MErcRUoiOWmOGveI=", write = TRUE) -->
+<!-- register_google(key = "REDACT", write = TRUE) -->
 <!-- nyc = c(left = 40.51337, bottom = -79.335875, right = 44.999505, top = -71.932673) -->
 <!-- get_map(nyc, maptype = "roadmap", zoom = 9)  %>% ggmap() -->
 
