@@ -1,1 +1,179 @@
 # Results
+---
+title: "Final Project Stuff"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(GGally)
+library(ggthemes)
+library(ggridges)
+library(RCurl)
+```
+
+## Initial Exploration
+```{r, include=FALSE}
+#RECYCLING
+# df_rec <- read_csv("Recycling_Diversion_and_Capture_Rates.csv")
+df_rec <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Recycling_Diversion_and_Capture_Rates.csv")
+df_rec <- read.csv(text = df_rec)
+df_rec$month  = df_rec$`Month.Name`
+
+#BUILDINGS
+df_build <- read_csv("NYC_Covered_Building_s_List__2020_.csv")
+df_build$footage <-as.numeric(df_build$`DOF Square Footage`)
+
+
+# df_zips <- read_csv("nyc_zip_borough_neighborhoods_pop.csv")
+df_zips <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/nyc_zip_borough_neighborhoods_pop.csv")
+df_zips <- read.csv(text = df_zips)
+df_zips <- df_zips[c(1, 2)]
+
+# df_build_energy <- read_csv("Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
+df_build_energy <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
+df_build_energy <- read.csv(text = df_build_energy)
+df_build_energy$zip <- df_build_energy$`Postal.Code`
+df_build_energy <- merge(df_build_energy, df_zips, by = "zip")
+df_build_energy$electricty <- as.numeric(df_build_energy$`Electricity.Use...Grid.Purchase..kWh.`)
+df_build_energy$ghg <- as.numeric(df_build_energy$`Total.GHG.Emissions..Metric.Tons.CO2e.`)
+
+df_ghg <- filter(df_build_energy, ghg >= 0 & ghg <= 670083.2) %>% group_by(borough, zip) %>% summarise(avg_ghg = mean(ghg), 
+                                                              median_ghg = median(ghg))
+df_ghg$place <- paste(df_ghg$borough, df_ghg$zip, sep = " - ")
+
+#FUEL
+# df_fuel <- read_csv("Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
+df_fuel <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
+df_fuel <- read.csv(text = df_fuel)
+
+
+#GET DFs IN MORE USABLE FORM
+rec_use <- df_rec[c(1, 10, 7, 8, 9, 6)]
+
+rec_use <- rec_use %>% group_by(Zone, month) %>% 
+  summarise(capture_rate = median(`Capture.Rate.Total...Total.Recycling...Leaves..Recycling......Max.Paper...Max.MGP..x100`),
+            paper_rate = median(`Capture.Rate.Paper..Total.Paper...Max.Paper.`),
+            mgp_rate = median(`Capture.Rate.MGP..Total.MGP...Max.MGP.`),
+            diversion_rate = median(`Diversion.Rate.Total..Total.Recycling...Total.Waste.`))
+
+
+rec_use$month <- factor(rec_use$month, levels = c("January", "February", "March", "April",
+                                                  "May", "June", "July", "August", "September",
+                                                  "November", "December"))
+```
+This is a line graph of capture rate by months by Zone:
+
+```{r echo=FALSE}
+ggplot(rec_use, aes(x = month, y = capture_rate, group = Zone)) +
+  geom_line(aes(color = Zone)) +
+  scale_color_colorblind() +
+  xlab("Month") +
+  ylab("Typical Overall Capture Rate")
+
+```
+
+This is a scatter plot of paper vs. mgp capture rate (nothing interesting looking at either with overall):
+```{r echo=FALSE}
+ggplot(rec_use, aes(x = paper_rate, y = mgp_rate)) +
+  geom_point() +
+  geom_smooth()
+```
+
+Looking at it with parallel coordinates:
+```{r echo=FALSE}
+ggparcoord(rec_use, columns=3:5,  alphaLines = .5,
+           splineFactor = 10, scale = 'uniminmax') +
+  scale_color_colorblind()
+```
+
+
+Maybe exclude overall?:
+```{r echo=FALSE}
+ggparcoord(rec_use, columns=4:5,  alphaLines = .5,
+           splineFactor = 10, scale = 'uniminmax') +
+  scale_color_colorblind()
+```
+
+And diversion rate (for comparison - Virginia hits in the 40s):
+```{r echo=FALSE}
+ggplot(rec_use, aes(x = month, y = diversion_rate, group = Zone)) +
+  geom_line(aes(color = Zone)) +
+  scale_color_colorblind() +
+  xlab("Month") +
+  ylab("Typical Overall Capture Rate")
+```
+
+Where are buildings?
+```{r echo=FALSE}
+ggplot(df_build, aes(x = Longitude, y = Latitude)) +
+  geom_point(aes(size = footage))
+```
+
+Trying to size based on ghg emissions:
+```{r echo=FALSE}
+ggplot(df_build_energy, aes(x = Longitude, y = Latitude)) +
+  geom_point(aes(size = ghg))
+```
+
+Lower Portion of Electricity Usage:
+```{r echo=FALSE}
+ggplot(filter(df_build_energy, electricty >= 0 & electricty <= 2393650), aes(x = electricty, y = borough, group = borough, fill = borough)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(from = 0, to = 2393650, by = 239365)) +
+  xlab("kWh of Electricity Used") +
+  ylab("Borough") +
+  theme(axis.text.x = element_text(angle = 45,  hjust=1)) +
+  geom_vline(xintercept = median(filter(df_build_energy, electricty >= 0 & electricty <= 2393650)$electricity))
+
+```
+
+Higher Portion (26 high outliers included nowhere):
+```{r echo=FALSE}
+ggplot(filter(df_build_energy, electricty > 2393650 & electricty <= 50905470), aes(x = electricty, y = borough, group = borough, fill = borough)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(from = 2393650, to = 50905470, by = 4851182)) +
+  xlab("kWh of Electricity Used") +
+  ylab("Borough") +
+  theme(axis.text.x = element_text(angle = 45,  hjust=1))
+```
+
+GhG Emissions:
+```{r echo=FALSE}
+ggplot(filter(df_build_energy, ghg <= 2952), aes(x = ghg, y = borough, group = borough, fill = borough)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(from = 0, to = 2952, by = 295)) +
+  xlab("Metric Tons of Green House Gas Emissions") +
+  ylab("Borough") +
+  theme(axis.text.x = element_text(angle = 45,  hjust=1))
+```
+
+This is a Cleveland Dot Plot of greenhouse gas emissions:
+
+```{r fig.height = 20, echo=FALSE}
+ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
+  geom_point() +
+  xlab("Average Green House Gas Emissions") +
+  ylab("Borough - Zip Code")
+
+```
+
+Ridges Based on Building Type:
+
+```{r fig.height=20, fig.width=15, echo=FALSE}
+ggplot(filter(df_build_energy, ghg <= 2952), aes(x = ghg, y = `Primary.Property.Type...Self.Selected`, group = `Primary.Property.Type...Self.Selected`, fill = `Primary.Property.Type...Self.Selected`)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(from = 0, to = 2952, by = 295)) +
+  xlab("Metric Tons of Green House Gas Emissions") +
+  ylab("Building Type") +
+  theme(axis.text.x = element_text(angle = 45,  hjust=1))
+```
