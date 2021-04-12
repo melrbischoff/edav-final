@@ -1,25 +1,44 @@
 # Data sources
-https://data.ny.gov/Energy-Environment/Electric-Vehicle-Charging-Stations-in-New-York/7rrd-248n
-ev_charging_data = read.csv("melissa_data_sets/Electric_Vehicle_Charging_Stations_in_New_York.csv")
 
-https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4
-emissons_from_fuel_data = read.csv("melissa_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
+```{r}
+library(readxl)
+# https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4
+emissions_from_fuel_data = read.csv("melissa_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
 
-https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y
-clean_rebate_data = read.csv("melissa_data_sets/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
-
-https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9
-energy_programs_data = read.csv("melissa_data_sets/NY_Clean_Energy_Dashboard_Programs_Progress_and_Plans__Beginning_January_2016.csv")
-
-https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz
-recycling_data = read.csv("melissa_data_sets/Recycling_Diversion_and_Capture_Rates.csv")
-
-https://data.cityofnewyork.us/Environment/Energy-Efficiency-Projects/h3qk-ybvt
-energy_efficiency_project_data = read.csv("melissa_data_sets/Energy_Efficiency_Projects.csv")
-
-https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/w5he-u64t
+# https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/w5he-u64t
 greenhouse_emissions_data = read.csv("melissa_data_sets/New_York_City_Greenhouse_Gas_Emissions_Electricity_Emission_Factors_2005_2016_.csv")
 
-https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b
+# https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b
 fuel_emission_factors_data = read.csv("melissa_data_sets/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
 
+# https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9
+energy_programs_data = read.csv("melissa_data_sets/NY_Clean_Energy_Dashboard_Programs_Progress_and_Plans__Beginning_January_2016.csv")
+
+# global electric car sales
+global_electric_car_sales_data = read.csv("melissa_data_sets/global-electric-car-sales-by-key-markets-2010-2020.csv")
+```
+
+# EValuate NY data
+# https://www.nyserda.ny.gov/All-Programs/Programs/ChargeNY/Support-Electric/Data-on-Electric-Vehicles-and-Charging-Stations
+```{r}
+# EV registrations in NY (zip code, car model, dates)
+ev_registrations_data = read.csv("melissa_data_sets/evaluate_ny/ny_ev_registrations.csv")
+
+# https://data.ny.gov/Energy-Environment/Electric-Vehicle-Charging-Stations-in-New-York/7rrd-248n
+ev_charging_data = read.csv("melissa_data_sets/evaluate_ny/Electric_Vehicle_Charging_Stations_in_New_York.csv")
+
+# https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y
+clean_rebate_data = read.csv("melissa_data_sets/evaluate_ny/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
+    
+read_excel_sheets <- function(filename, tibble = FALSE) {
+    sheets <- readxl::excel_sheets(filename)
+    x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
+    if(!tibble) x <- lapply(x, as.data.frame)
+    names(x) <- sheets
+    x
+}
+
+# good stuff here - charging data, rebates, ... 
+resources_sheets <- read_excel_sheets("melissa_data_sets/evaluate_ny/resources.xlsx")
+ev_registration_tables_sheets <- read_excel_sheets("melissa_data_sets/evaluate_ny/EV-Registration-Tables.xlsx")
+```

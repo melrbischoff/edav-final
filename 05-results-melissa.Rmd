@@ -1,19 +1,117 @@
 # Results
-ev_charging_data = read.csv("melissa_data_sets/Electric_Vehicle_Charging_Stations_in_New_York.csv")
-emissons_from_fuel_data = read.csv("melissa_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
-clean_rebate_data = read.csv("melissa_data_sets/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
-energy_programs_data = read.csv("melissa_data_sets/NY_Clean_Energy_Dashboard_Programs_Progress_and_Plans__Beginning_January_2016.csv")
-recycling_data = read.csv("melissa_data_sets/Recycling_Diversion_and_Capture_Rates.csv")
-energy_efficiency_project_data = read.csv("melissa_data_sets/Energy_Efficiency_Projects.csv")
-greenhouse_emissions_data = read.csv("melissa_data_sets/New_York_City_Greenhouse_Gas_Emissions_Electricity_Emission_Factors_2005_2016_.csv")
-fuel_emission_factors_data = read.csv("melissa_data_sets/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
+library(ggplot2)
 
-install.packages("ggmap")
-library(tidyverse)
-library(ggmap)
+### emissions from fuel data - factors
 
-# maybe map EV charging data in d3
-<!-- register_google(key = "REDACT", write = TRUE) -->
-<!-- nyc = c(left = 40.51337, bottom = -79.335875, right = 44.999505, top = -71.932673) -->
-<!-- get_map(nyc, maptype = "roadmap", zoom = 9)  %>% ggmap() -->
+# TODO thinking about making transportation stand out in a better way
+# TODO beautify
+takeaway: transportation is highest, emissions from cars are a considerable amount of total emissions
+think this is just for NYS - check source
+```{r}
+library("tidyverse")
+df <- emissions_from_fuel_data %>%
+  select(year, residential_total, commercial_total, industrial_total,
+         transportation_total, electric_generation_total,
+         net_imports_of_electricity) %>%
+  gather(key = "variable", value = "value", -year)
+
+ggplot(df, aes(x = year, y = value)) + 
+  geom_line(aes(color = variable)) +
+  geom_point(size = 1, color = "darkgray") +
+  scale_color_manual(values=c("grey", "grey", "grey", "grey", "grey", "red"))
+```
+
+this is just NYC 2016 - more specific breakdown of above
+# TODO this is hideous
+```{r}
+ggplot(fuel_emission_factors_data, aes(x=source, y=co2e_kg_unit__fossil_, fill=sector)) +
+  geom_bar(stat="identity")
+```
+
+### global electric car sales
+
+# TODO beautfiy/diff type of graph?
+# TODO maybe do % increase each year?
+```{r}
+global_electric_car_sales_df <- global_electric_car_sales_data %>%
+  select(x, china, usa, europe, japan) %>%
+  gather(key = "variable", value = "value", -x)
+
+ggplot(global_electric_car_sales_df, aes(x = x, y = value, fill = variable)) + 
+  geom_bar(stat="identity") +
+  xlab("Year")
+```
+takeaway: US lagging behind other countries in EV adaption?
+
+# Energy Program Data - Participants
+this data set has info on how much budget energy programs get - has transportation category.\
+maybe can compare it to other programs?\
+rebates and public transportation are in here.\
+
+These are good:\
+Direct Gross Annual Beneficial Electrification (MWh) Commitments Planned vs Acquired\
+^^ same w CO2 emissions reductions planned vs acquired\
+^^ same w participants \
+
+# TODO clean up so dfs aren't same name etc
+# TODO is this nyc or nys
+# TODO these numbers are cumulative so maybe not best way to show? line graph? add in acquired by quarter?
+# TODO diff for each quarter
+# check if data was updated form q3 - q4 2020
+```{r}
+# rebates started in 2017
+energy_programs_data_df = energy_programs_data %>% 
+  filter(year > 2016 & year < 2021 & program_name == 'Electric Vehicles - Rebate') %>%
+  select(reporting_period,
+         direct_participants_counts_commitments_planned_to_date,
+         direct_participants_counts_acquired_to_date) %>%
+  gather(key = "variable", value = "value", -reporting_period)
+
+ggplot(energy_programs_data_df, 
+       aes(x = reporting_period,
+           y = value,
+           fill = variable)) + 
+  geom_bar(stat = "identity",position="dodge") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  scale_fill_discrete(labels = c(
+    direct_participants_counts_acquired_to_date="participants acquired",
+    direct_participants_counts_commitments_planned_to_date="participanted commitments planned"))
+```
+takeaway: at first not many people used it compared to how many slots were allotted, but eventually participants exceeded slots (didn't get payout?) -- govt needs to allocate more $ maybe
+
+# TODO maybe a graph of % of committed (acquired / commitments)
+# TODO beautify
+
+### Energy Program Data - CO2 emissions
+
+# TODO these numbers are cumulative so maybe not best way to show? line graph? add in acquired by quarter?
+```{r}
+energy_programs_data_df = energy_programs_data %>% 
+  filter(year > 2016 & year < 2021 & program_name == 'Electric Vehicles - Rebate') %>%
+  select(reporting_period,
+         direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date,
+         direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date) %>%
+  gather(key = "variable", value = "value", -reporting_period)
+
+ggplot(energy_programs_data_df, 
+       aes(x = reporting_period,
+           y = value,
+           fill = variable)) + 
+  geom_bar(stat = "identity",position="dodge") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  scale_fill_discrete(labels = c(
+    direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date="CO2 emission reductions acquired",
+    direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="CO2 emission reductions planned"))
+```
+Just in the past year did emission reductions acquired start to out perform planned - do we need to up the ante? is this enough?
+
+### Clean rebate data
+
+```{r}
+ggplot(clean_rebate_data, aes(x=))
+```
+
+
+
+
 
