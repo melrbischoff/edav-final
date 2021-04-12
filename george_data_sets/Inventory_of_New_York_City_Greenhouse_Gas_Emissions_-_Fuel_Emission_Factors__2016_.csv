@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a4b73c528632a83c70adc5f2d6807b76069f28fc33dc47fae4853c82ef9e84bd
-size 1796
+Sector,Source,Unit,CO2 (kg/UNIT) (fossil),CO2 (kg/UNIT) (biogenic),CH4 (kg/UNIT),N2O (kg/UNIT),CO2e (kg/UNIT) (fossil)
+Natural gas (buildings),Stationary,GJ,50.2559,,0.005,0.0001,50.411
+Natural gas (industrial),Stationary,GJ,50.2559,,0.001,0.0001,50.311
+#2 fuel oil (buildings),Stationary,liter,2.702,,0.0004,0.000022,2.719
+#2 fuel oil (industrial),Stationary,liter,2.702,,0.0001,0.000022,2.711
+#4 fuel oil (buildings),Stationary,liter,2.8961,,0.0004,0.000023,2.914
+#4 fuel oil (industrial),Stationary,liter,2.8961,,0.0001,0.000023,2.906
+#6 fuel oil (buildings),Stationary,liter,2.9834,,0.0004,0.000024,3.001
+#6 fuel oil (industrial),Stationary,liter,2.9834,,0.0001,0.000024,2.994
+Biodiesel (biogenic carbon),Stationary,liter,,2.0094,0,0.000004,0.002
+Propane,Stationary,liter,1.4846,,0.0001,0.000015,1.491
+Kerosene,Stationary,liter,2.6812,,0.0001,0.000022,2.69
+Gasoline - passenger cars,On-road mobile,liter,2.3421,,0.000168,0.000265,2.425
+Gasoline - light trucks,On-road mobile,liter,2.3421,,0.0002,0.0003,2.425
+Diesel passenger cars,On-road mobile,liter,2.6799,,0.000002,0.000004,2.681
+Diesel - light trucks,On-road mobile,liter,2.6799,,0.000003,0.000004,2.681
+Diesel - heavy duty vehicles,On-road mobile,liter,2.6799,,0.000012,0.000011,2.683
+Diesel - bus,On-road mobile,liter,2.6799,,0.000017,0.000016,2.685
+Biodiesel - heavy duty trucks,On-road mobile,liter,,2.0094,0.000037,0.000004,0.002
+Ethanol (E100) - passenger car,On-road mobile,liter,,1.5285,0.00034,0.000414,1.66
+CNG - buses,On-road mobile,GJ,50.247,,0.065902,0.005866,53.642
+Jet Fuel,Off-road,liter,2.466,,0,0.000079,2.49
+Aviation gasoline,Off-road,liter,2.1955,,0.001865,0.000029,2.251
+Diesel - rail locomotive,Off-road,liter,2.6799,,0.000211,0.000069,2.706
+Diesel - marine (in port),Off-road,liter,2.6799,,0.000016,0.000119,2.716
