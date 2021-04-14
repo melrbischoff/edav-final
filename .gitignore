@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .ny_ev_registrations
+*.csv
+*.pdf
+*.xlsx
