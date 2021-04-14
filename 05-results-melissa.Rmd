@@ -9,13 +9,13 @@ takeaway: transportation is highest, emissions from cars are a considerable amou
 think this is just for NYS - check source
 ```{r}
 library("tidyverse")
-df <- emissions_from_fuel_data %>%
+emissions_from_fuel_data_df <- emissions_from_fuel_data %>%
   select(year, residential_total, commercial_total, industrial_total,
          transportation_total, electric_generation_total,
          net_imports_of_electricity) %>%
   gather(key = "variable", value = "value", -year)
 
-ggplot(df, aes(x = year, y = value)) + 
+ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) + 
   geom_line(aes(color = variable)) +
   geom_point(size = 1, color = "darkgray") +
   scale_color_manual(values=c("grey", "grey", "grey", "grey", "grey", "red"))
@@ -60,14 +60,16 @@ Direct Gross Annual Beneficial Electrification (MWh) Commitments Planned vs Acqu
 # check if data was updated form q3 - q4 2020
 ```{r}
 # rebates started in 2017
-energy_programs_data_df = energy_programs_data %>% 
-  filter(year > 2016 & year < 2021 & program_name == 'Electric Vehicles - Rebate') %>%
+energy_program_participants = energy_programs_data %>% 
+  filter(year > 2016 & year < 2021 
+         & program_name == 'Electric Vehicles - Rebate'
+         & reporting_period != '2020 Q4')%>%
   select(reporting_period,
          direct_participants_counts_commitments_planned_to_date,
          direct_participants_counts_acquired_to_date) %>%
   gather(key = "variable", value = "value", -reporting_period)
 
-ggplot(energy_programs_data_df, 
+ggplot(energy_program_participants, 
        aes(x = reporting_period,
            y = value,
            fill = variable)) + 
@@ -104,11 +106,15 @@ ggplot(energy_programs_data_df,
     direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="CO2 emission reductions planned"))
 ```
 Just in the past year did emission reductions acquired start to out perform planned - do we need to up the ante? is this enough?
+The clean rebate is making a positive impact
+
+# TODO - does NY have a cap like federal?
 
 ### Clean rebate data
 
+
 ```{r}
-ggplot(clean_rebate_data, aes(x=))
+ggplot(clean_rebate_data, aes(x= year_quarter, y= ))
 ```
 
 
