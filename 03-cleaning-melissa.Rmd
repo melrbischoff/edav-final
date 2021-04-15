@@ -5,21 +5,20 @@
 library(tidyverse)
 library(base)
 library(zoo)
+library(lubridate)
 
-# from melissa_data_sets/resources.xlsx
+# from resources.xlsx
 ev_charging_use_data = resources_sheets$`Charging Use`
-ev_rebate_eligible_cars_data = resources_sheets$`Rebate Lookup`
 
+# use clean_rebate_data instead - more up to date but same thing
+# ev_rebate_data = resources_sheets$`Drive Clean Rebate`
 
-# from melissa_data_sets/EV-Registration-Tables.xlsx
+# from EV-Registration-Tables.xlsx
 ev_zip_code_data = ev_registration_tables_sheets$`Current by ZIP Code`
 ev_make_model_data = ev_registration_tables_sheets$`Current by Make-Model`
 ev_county_data = ev_registration_tables_sheets$`Current by County`
 ev_over_time_data = ev_registration_tables_sheets$`Original Over Time`
 ev_make_over_time = ev_registration_tables_sheets$`Original by Make`
-
-# from melissa_data_sets/CVRPStats.xlsx
-federal_cvrp_stats = federal_cvrp_sheets$CVRP
 
 cleanCols <- function(x){
   lower_names = tolower(names(x))
@@ -36,10 +35,25 @@ names(fuel_emission_factors_data) = cleanCols(fuel_emission_factors_data)
 names(clean_rebate_data) = cleanCols(clean_rebate_data)
 names(ev_registrations_data) = cleanCols(ev_registrations_data)
 names(federal_cvrp_stats) = cleanCols(federal_cvrp_stats)
+names(ev_rebate_data) = cleanCols(ev_rebate_data)
 
-ev_original_registrations_data = filter(ev_registrations_data, registration == 'Original')
+# ev_original_registrations_data = filter(ev_registrations_data, registration == 'Original')
 
 clean_rebate_data$date = as.Date(clean_rebate_data$submitted_date, "%m/%d/%Y")
+clean_rebate_data$year = format(clean_rebate_data$date, format="%Y")
 clean_rebate_data$year_quarter <- as.yearqtr(clean_rebate_data$date, format = "%Y-%m-%d")
+
+clean_rebate_data$cumulative_rebate_amount = cumsum(clean_rebate_data$rebate_amount_usd_)
+
+# count by quarter
+clean_rebate_counts = clean_rebate_data %>% group_by(year_quarter) %>% tally()
+
+# by quarter
+clean_rebate_data_by_quarter = aggregate(clean_rebate_data$rebate_amount_usd_,
+                                         by=list(clean_rebate_data$year_quarter),
+                                         FUN=sum)
+
+clean_rebate_data_by_quarter$cumulative_rebate_amount = cumsum(clean_rebate_data_by_quarter$rebate_amount)
+clean_rebate_data_by_quarter$count = clean_rebate_counts$n
 ```
 
