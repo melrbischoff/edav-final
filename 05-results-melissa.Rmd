@@ -113,9 +113,6 @@ The clean rebate is making a positive impact
 ### Clean rebate data
 
 
-```{r}
-ggplot(clean_rebate_data, aes(x= year_quarter, y= ))
-```
 
 
 

@@ -1,0 +1,30 @@
+# cvrp code
+```{r}
+library(tidyverse)
+read_excel_sheets <- function(filename, tibble = FALSE) {
+    sheets <- readxl::excel_sheets(filename)
+    x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
+    if(!tibble) x <- lapply(x, as.data.frame)
+    names(x) <- sheets
+    x
+}
+
+federal_cvrp_sheets <- read_excel_sheets("ev_data_sets/federal/CVRPStats.xlsx")
+federal_cvrp_stats = federal_cvrp_sheets$CVRP
+
+cleanCols <- function(x){
+  lower_names = tolower(names(x))
+  sub_periods = gsub("\\.", "_", lower_names)
+  sub_spaces = gsub(" ","_",sub_periods)
+  clean_df_cols = gsub("__","_",sub_spaces)
+  return(clean_df_cols)
+}
+
+names(federal_cvrp_stats) = cleanCols(federal_cvrp_stats)
+
+nrow(filter(federal_cvrp_stats, vehicle_make == 'Tesla'))
+# 124697
+nrow(filter(federal_cvrp_stats, vehicle_make == 'Tesla' & application_date <= '2018-07-01'))
+# 45305 
+# weird.
+```
