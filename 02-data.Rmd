@@ -75,7 +75,7 @@ Of initial interest is a provided dataset on the state's [status in clean energy
 
 In concert with the previous dataset listed, we also used one dedicated to [the clean rebate program](https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y). This dataset has variables such make, model, rebate, and zip code. While the previous dataset was crucial for understanding overall program effectiveness, this one gives a more granular view and provides insights into where and how the program is or is not working. It has approximately 37,000 observations.
 
-# 3.3 Other Data Sources
+## Other Data Sources
 We also made use of a [non-Open-NYC dataset](https://data.beta.nyc/en/dataset/pediacities-nyc-neighborhoods/resource/7caac650-d082-4aea-9f9b-3681d568e8a5) to access its variables mapping zip codes to boroughs. It has 177 entries. 
 
 Lastly, while our focus was local, benchmarking is important. As such, we made use of [global electric vehicle data](https://cleanvehiclerebate.org/eng/rebate-statistics) in order to provide insights into how we are pacing in terms of EV use growth.
