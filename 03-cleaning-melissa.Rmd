@@ -34,8 +34,6 @@ names(emissions_from_fuel_data) = cleanCols(emissions_from_fuel_data)
 names(fuel_emission_factors_data) = cleanCols(fuel_emission_factors_data)
 names(clean_rebate_data) = cleanCols(clean_rebate_data)
 names(ev_registrations_data) = cleanCols(ev_registrations_data)
-names(federal_cvrp_stats) = cleanCols(federal_cvrp_stats)
-names(ev_rebate_data) = cleanCols(ev_rebate_data)
 
 # ev_original_registrations_data = filter(ev_registrations_data, registration == 'Original')
 
@@ -53,7 +51,10 @@ clean_rebate_data_by_quarter = aggregate(clean_rebate_data$rebate_amount_usd_,
                                          by=list(clean_rebate_data$year_quarter),
                                          FUN=sum)
 
+names(clean_rebate_data_by_quarter) = c("year_quarter", "rebate_amount")
+
 clean_rebate_data_by_quarter$cumulative_rebate_amount = cumsum(clean_rebate_data_by_quarter$rebate_amount)
 clean_rebate_data_by_quarter$count = clean_rebate_counts$n
+clean_rebate_data_by_quarter$cumulative_count = cumsum(clean_rebate_data_by_quarter$count)
 ```
 
