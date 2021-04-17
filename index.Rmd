@@ -7,3 +7,13 @@ site: bookdown::bookdown_site
 
 # Introduction
 
+Climate change is a big problem. Like, a really big problem. According to the World Health Organization, climate change is already estimated to [kill over 150,000 people every year](https://www.who.int/heli/risks/climate/climatechange/en/), and it is a virtual guarantee that the situation [will worsen](https://climate.nasa.gov/effects/). Naturally, the conversation around this catastrophe is often through a very large lens. "Will the United States rejoin the Paris Climate Agreement?" "Does it even matter if China and India's greenhouse gas emissions continue at these rates?" We've all heard these narratives and understand their importance. To the extent that climate change is discussed, these big picture items dominate the public discourse. This singular focus on the enormity of the challenge we face is an equally enormous mistake.
+
+
+Large scale introduces strong friction, and as such these points of discussion are often unwieldy and frustratingly unproductive. The public has been having this big idea discussion - again, to the extent that it has been having any serious discussion regarding climate change - for decades. Our progress towards solutions has been minimal. Perhaps it is time for a different a tact. Perhaps it is time to think small.
+
+While national and global action capture the imagination, local progress represents an arena for real, steady gains in this struggle. If we all refocused some of our attention on the ways in which our closest communities could contribute to a solution, specific, concrete strategies would lead to legitimate gains. Get enough grains of sand, and you have a mound. Do so quickly, and you can build a dune.
+
+To be clear - climate change will require continued attention on the aforementioned big picture problems. A global crisis requires global solutions, and we in no way advocate for abandoning these discussions. But, we have to start somewhere. And we have to start now. Local action can grant greater autonomy to individuals, offer proof of concept for larger-scale solutions that will be necessary, and bring swifter advancement. Parallel tracks of focus will be necessary moving forward.
+
+So, in attempt to make immediate progress on an immediate problem, we encourage readers to think local. As New Yorkers, we will focus our paper on New York City (you know a problem is tremendous when New York constitutes small) and New York State. Specifically, we aim to take stock of how sustainable an area New York is currently, identify areas for improvement among private citizens and through public policy, and to explore ways in which these arenas can interact. We begin with an overview of publicly available information on the topic.

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>YOUR TITLE HERE</title>
-  <meta name="description" content="YOUR TITLE HERE" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <title>TITLE</title>
+  <meta name="description" content="TITLE" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="YOUR TITLE HERE" />
+  <meta property="og:title" content="TITLE" />
   <meta property="og:type" content="book" />
   
   
@@ -16,15 +16,15 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YOUR TITLE HERE" />
+  <meta name="twitter:title" content="TITLE" />
   
   
   
 
-<meta name="author" content="YOUR NAMES HERE" />
+<meta name="author" content="Melissa Bischoff &amp; George Reynolds" />
 
 
-<meta name="date" content="2020-11-09" />
+<meta name="date" content="2021-04-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,6 @@
   
 
 <link rel="next" href="data-sources.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -72,12 +71,16 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
-<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
-<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
-<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
-<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#data-ny-gov"><i class="fa fa-check"></i><b>2.2</b> Data NY Gov</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="other-data-sources.html"><a href="other-data-sources.html"><i class="fa fa-check"></i><b>3</b> 3.3 Other Data Sources</a></li>
+<li class="chapter" data-level="4" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>4</b> Data transformation</a></li>
+<li class="chapter" data-level="5" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>5</b> Missing values</a></li>
+<li class="chapter" data-level="6" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>6</b> Results</a></li>
+<li class="chapter" data-level="7" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>7</b> Interactive component</a></li>
+<li class="chapter" data-level="8" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>8</b> Conclusion</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -89,7 +92,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">YOUR TITLE HERE</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">TITLE</a>
           </h1>
         </div>
 
@@ -98,12 +101,17 @@
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">YOUR TITLE HERE</h1>
-<p class="author"><em>YOUR NAMES HERE</em></p>
-<p class="date"><em>2020-11-09</em></p>
+<h1 class="title">TITLE</h1>
+<p class="author"><em>Melissa Bischoff &amp; George Reynolds</em></p>
+<p class="date"><em>2021-04-17</em></p>
 </div>
-<div id="introduction" class="section level1" number="1">
+<div id="introduction" class="section level1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
+<p>Climate change is a big problem. Like, a really big problem. According to the World Health Organization, climate change is already estimated to <a href="https://www.who.int/heli/risks/climate/climatechange/en/">kill over 150,000 people every year</a>, and it is a virtual guarantee that the situation <a href="https://climate.nasa.gov/effects/">will worsen</a>. Naturally, the conversation around this catastrophe is often through a very large lens. “Will the United States rejoin the Paris Climate Agreement?” “Does it even matter if China and India’s greenhouse gas emissions continue at these rates?” We’ve all heard these narratives and understand their importance. To the extent that climate change is discussed, these big picture items dominate the public discourse. This singular focus on the enormity of the challenge we face is an equally enormous mistake.</p>
+<p>Large scale introduces strong friction, and as such these points of discussion are often unwieldy and frustratingly unproductive. The public has been having this big idea discussion - again, to the extent that it has been having any serious discussion regarding climate change - for decades. Our progress towards solutions has been minimal. Perhaps it is time for a different a tact. Perhaps it is time to think small.</p>
+<p>While national and global action capture the imagination, local progress represents an arena for real, steady gains in this struggle. If we all refocused some of our attention on the ways in which our closest communities could contribute to a solution, specific, concrete strategies would lead to legitimate gains. Get enough grains of sand, and you have a mound. Do so quickly, and you can build a dune.</p>
+<p>To be clear - climate change will require continued attention on the aforementioned big picture problems. A global crisis requires global solutions, and we in no way advocate for abandoning these discussions. But, we have to start somewhere. And we have to start now. Local action can grant greater autonomy to individuals, offer proof of concept for larger-scale solutions that will be necessary, and bring swifter advancement. Parallel tracks of focus will be necessary moving forward.</p>
+<p>So, in attempt to make immediate progress on an immediate problem, we encourage readers to think local. As New Yorkers, we will focus our paper on New York City (you know a problem is tremendous when New York constitutes small) and New York State. Specifically, we aim to take stock of how sustainable an area New York is currently, identify areas for improvement among private citizens and through public policy, and to explore ways in which these arenas can interact. We begin with an overview of publicly available information on the topic.</p>
 
 </div>
             </section>
@@ -143,7 +151,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/index.Rmd",
+"link": "https://github.com/melrbischoff/edav-final/edit/main/index.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -151,7 +159,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/index.Rmd",
+"link": "https://github.com/melrbischoff/edav-final/blob/main/index.Rmd",
 "text": null
 },
 "download": null,
@@ -162,6 +170,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

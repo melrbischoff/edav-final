@@ -1,5 +1,16 @@
 # Missing values
 
-# missing values in CO2 col - maybe fill with avg for other similar projects?
-sum(is.na(energy_efficiency_project_data$*CO2 col*))
+First, there are many observations in the recycling dataset with the month field not populated. As the problem appears about the occur uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.
 
+As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously.
+
+```{r echo=FALSE}
+ggplot(df_build_energy_source, aes(Borough)) +
+  geom_bar(stat = "count") +
+  ggtitle("Most Observations Have No Borough Documented") +
+  ylab("Observations") + 
+  scale_y_continuous(label = comma)
+
+#sum(is.na(energy_efficiency_project_data$*CO2 col*))
+#^^THIS MAKES MARKDOWN BARF
+```

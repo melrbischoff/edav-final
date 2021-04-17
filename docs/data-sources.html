@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Data sources | YOUR TITLE HERE</title>
-  <meta name="description" content="Chapter 2 Data sources | YOUR TITLE HERE" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <title>Chapter 2 Data sources | TITLE</title>
+  <meta name="description" content="Chapter 2 Data sources | TITLE" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Data sources | YOUR TITLE HERE" />
+  <meta property="og:title" content="Chapter 2 Data sources | TITLE" />
   <meta property="og:type" content="book" />
   
   
@@ -16,15 +16,15 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Data sources | YOUR TITLE HERE" />
+  <meta name="twitter:title" content="Chapter 2 Data sources | TITLE" />
   
   
   
 
-<meta name="author" content="YOUR NAMES HERE" />
+<meta name="author" content="Melissa Bischoff &amp; George Reynolds" />
 
 
-<meta name="date" content="2020-11-09" />
+<meta name="date" content="2021-04-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,8 +32,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="data-transformation.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<link rel="next" href="other-data-sources.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -72,12 +71,16 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
-<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
-<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
-<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
-<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#data-ny-gov"><i class="fa fa-check"></i><b>2.2</b> Data NY Gov</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="other-data-sources.html"><a href="other-data-sources.html"><i class="fa fa-check"></i><b>3</b> 3.3 Other Data Sources</a></li>
+<li class="chapter" data-level="4" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>4</b> Data transformation</a></li>
+<li class="chapter" data-level="5" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>5</b> Missing values</a></li>
+<li class="chapter" data-level="6" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>6</b> Results</a></li>
+<li class="chapter" data-level="7" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>7</b> Interactive component</a></li>
+<li class="chapter" data-level="8" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>8</b> Conclusion</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -89,7 +92,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">YOUR TITLE HERE</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">TITLE</a>
           </h1>
         </div>
 
@@ -97,9 +100,24 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-sources" class="section level1" number="2">
+<div id="data-sources" class="section level1">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
-
+<div id="nyc-open-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> NYC Open Data</h2>
+<p>On the city level, our key data source is NYC Open Data - <a href="https://opendata.cityofnewyork.us/">located here</a>. This site offers a library of datasets filled with municipal-government-agency-collected data.</p>
+<p>To begin, we wanted to understand how well NYC recycles, so we turned to a simple <a href="https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz">recycling diversion and capture dataset</a>. The data shows diversion and capture rates (as well as a breakout of the latter) for each zone and district in each borough for each month of 2019. It has approximately 2,800 observations.</p>
+<p>In order to take stock of current emission factors, we rely mostly on two key datasets. First, we use an <a href="https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b">inventory of sources of greenhouse gas emissions from fuel emissions in NYC</a>. The most crucial variables available are sector (e.g. natural gas, propane), source (e.g. stationary, on-road mobile) and CO<span class="math inline">\(_2\)</span> emission rates. Due to the grouped nature of the data, the set itself is quite manageable, with only 24 observations.</p>
+<p>The second key dataset for understanding New York City greenhouse gas emissions contains <a href="https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/qb3v-bbre">energy and water disclose data</a> for buildings - specifically, buildings covered by <a href="https://www1.nyc.gov/assets/buildings/local_laws/ll84of2009.pdf">local law 84</a>. The dataset contains variables such as zip code, BBL (a uniuqe property identifier), total square footage, kilowatt hours of electricity consumed and total metric tons of greenhouse gas emissions for buildings. The set has approximately 29,000 observations. One immediately apparent issue was the presence of negative GHG emissions for one observation. It seems to be an obvious error and is filtered out. Further Issues regarding the data will be discussed in relation to a second dataset, as well as in section III and IV.</p>
+<p>Also crucial for understanding New York City buildings was a <a href="https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks">primary land use dataset</a>, which also contained BBL and key building measurements for understanding 2D square footage of buildings (i.e. square footage on a single floor). This dataset has over 850,000 obvservations. This highlights a key shortcoming of the preceding dataset referenced, as it offers only a limited sample of buildings documented. Further, it is far from a random sample, as Local Law 84 covers buildings only reaching specific thresholds of square footage. In order to consider the city as a whole, the energy use dataset has to be used in order to make estimations more widely.</p>
+</div>
+<div id="data-ny-gov" class="section level2">
+<h2><span class="header-section-number">2.2</span> Data NY Gov</h2>
+<p>On the state level, we rely on the state-level counterpart to Open NYC <a href="https://data.ny.gov/">data.ny.gov</a>. This site offers a similar depth and breadth of datasets available. For our purposes, it was particularly useful for understanding the current state of vehicle usage (e.g. greenhouse gas emissions from cars, how many electric vehicles are in circulation, etc.).</p>
+<p>Firstly, we make use of data on <a href="https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4">greenhouse gas emissions from fuel combustion</a>. This dataset is very similar to the city-level one, variables representing metric tons of greenhouse gas emissions from sources such as residential, transportation and commercial activity, with the added benefit of a longer time period represented by the year variable. It is also of similar size to the previous set, 27 observation. This dataset is state-level but also crucial for understanding the city-level data we had, as it demonstrated key contrasts between the city and state.</p>
+<p>From here, we relied heavily on NYSERDA data - a subset of the entire state’s data library dedicated to understanding energy research and development.</p>
+<p>Of initial interest is a provided dataset on the state’s <a href="https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9">status in clean energy programs</a>. We use this dataset’s variables such as program name, direct participants acquisitions planned, and direct participants acquired to date in order to the planned scale and current effectiveness of the state’s electric vehicle rebate program. The set has approximately 23,000 observations.</p>
+<p>In concert with the previous dataset listed, we also used one dedicated to <a href="https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y">the clean rebate program</a>. This dataset has variables such make, model, rebate, and zip code. While the previous dataset was crucial for understanding overall program effectiveness, this one gives a more granular view and provides insights into where and how the program is or is not working. It has approximately 37,000 observations.</p>
+</div>
 </div>
             </section>
 
@@ -107,7 +125,7 @@
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data-transformation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="other-data-sources.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -138,7 +156,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/02-data.Rmd",
+"link": "https://github.com/melrbischoff/edav-final/edit/main/02-data.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -146,7 +164,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/02-data.Rmd",
+"link": "https://github.com/melrbischoff/edav-final/blob/main/02-data.Rmd",
 "text": null
 },
 "download": null,
@@ -157,6 +175,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
