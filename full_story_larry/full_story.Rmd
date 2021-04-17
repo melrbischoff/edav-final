@@ -218,7 +218,7 @@ First, there are many observations in the recycling dataset with the month field
 
 As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below:
 
-```{r echo = F, warning = F, message = F}
+```{r include = FALSE}
 df_build_energy_w_nas <- read_csv("Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
 
 ggplot(df_build_energy_w_nas, aes(Borough)) +
@@ -260,7 +260,7 @@ While recycling stood out as an easy entrance point to understanding New York's 
 
 We begin by considering the largest sources of GHG in New York State over time:
 
-```{r echo = F, message = F}
+```{r echo = F, message = F, warning=F}
 library("tidyverse")
 library(ggplot2)
 

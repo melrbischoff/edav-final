@@ -1,179 +1,289 @@
 # Results
----
-title: "Final Project Stuff"
-output: html_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(GGally)
-library(ggthemes)
-library(ggridges)
-library(RCurl)
-```
+We begin our analysis with a basic measure of how much a community cares about the environment - how well it recycles.Specifically, we consider the diversion rate (recycled waste/total waste) of every Zone (a subgroup of a borough) documented. Unfortunately, New York City is very lacking in this measure.
 
-## Initial Exploration
-```{r, include=FALSE}
-#RECYCLING
-# df_rec <- read_csv("Recycling_Diversion_and_Capture_Rates.csv")
-df_rec <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Recycling_Diversion_and_Capture_Rates.csv")
-df_rec <- read.csv(text = df_rec)
-df_rec$month  = df_rec$`Month.Name`
-
-#BUILDINGS
-df_build <- read_csv("NYC_Covered_Building_s_List__2020_.csv")
-df_build$footage <-as.numeric(df_build$`DOF Square Footage`)
-
-
-# df_zips <- read_csv("nyc_zip_borough_neighborhoods_pop.csv")
-df_zips <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/nyc_zip_borough_neighborhoods_pop.csv")
-df_zips <- read.csv(text = df_zips)
-df_zips <- df_zips[c(1, 2)]
-
-# df_build_energy <- read_csv("Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
-df_build_energy <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
-df_build_energy <- read.csv(text = df_build_energy)
-df_build_energy$zip <- df_build_energy$`Postal.Code`
-df_build_energy <- merge(df_build_energy, df_zips, by = "zip")
-df_build_energy$electricty <- as.numeric(df_build_energy$`Electricity.Use...Grid.Purchase..kWh.`)
-df_build_energy$ghg <- as.numeric(df_build_energy$`Total.GHG.Emissions..Metric.Tons.CO2e.`)
-
-df_ghg <- filter(df_build_energy, ghg >= 0 & ghg <= 670083.2) %>% group_by(borough, zip) %>% summarise(avg_ghg = mean(ghg), 
-                                                              median_ghg = median(ghg))
-df_ghg$place <- paste(df_ghg$borough, df_ghg$zip, sep = " - ")
-
-#FUEL
-# df_fuel <- read_csv("Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
-df_fuel <- getURL("https://raw.githubusercontent.com/melrbischoff/edav-final/main/george_data_sets/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
-df_fuel <- read.csv(text = df_fuel)
-
-
-#GET DFs IN MORE USABLE FORM
-rec_use <- df_rec[c(1, 10, 7, 8, 9, 6)]
-
-rec_use <- rec_use %>% group_by(Zone, month) %>% 
-  summarise(capture_rate = median(`Capture.Rate.Total...Total.Recycling...Leaves..Recycling......Max.Paper...Max.MGP..x100`),
-            paper_rate = median(`Capture.Rate.Paper..Total.Paper...Max.Paper.`),
-            mgp_rate = median(`Capture.Rate.MGP..Total.MGP...Max.MGP.`),
-            diversion_rate = median(`Diversion.Rate.Total..Total.Recycling...Total.Waste.`))
-
-
-rec_use$month <- factor(rec_use$month, levels = c("January", "February", "March", "April",
-                                                  "May", "June", "July", "August", "September",
-                                                  "November", "December"))
-```
-This is a line graph of capture rate by months by Zone:
-
-```{r echo=FALSE}
-ggplot(rec_use, aes(x = month, y = capture_rate, group = Zone)) +
-  geom_line(aes(color = Zone)) +
+```{r echo = F}
+ggplot(rec_use, aes(x = month, y = diversion_rate, group = zone)) +
+  geom_line(aes(color = zone)) +
   scale_color_colorblind() +
   xlab("Month") +
-  ylab("Typical Overall Capture Rate")
+  ylab("Typical Overall Diversion Rate - %") +
+  geom_hline(yintercept = 43.2)+
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+```
+
+Notice the flat horizontal line above the others. This is not marking the diversion rate for an NYC Zone - it is a comparison point. Specifically, it the 2019 diversion rate for [Virginia](https://www.deq.virginia.gov/land-waste/recycling/recycling-data/recycling-rate-report). Obviously every zone in the city is falling well short of this standard. 
+
+It should be noted that a city and state may have different obstacles for their recycling; however, it should also be noted that NYC and VA are virtually the same size. New York's population is only 200,000 people fewer than Virginia's [according to the census bureau's website](https://www.census.gov/quickfacts/fact/table/VA,newyorkcitynewyork/PST045219). Further, New York is one of the most well-resourced cities in the world. Simply put, we should not be falling this short. Several municipalities in Virginia have implemented single stream recycling, and the state as a whole is now outperforming. Perhaps such a policy could help.
+
+While recycling stood out as an easy entrance point to understanding New York's current sustainability, this is, of course, a very incomplete picture. We next decided to consider perhaps the most important measure of an area's environmental impact = Greenhouse Gas Emissions (GHG). 
+
+We begin by considering the largest sources of GHG in New York State over time:
+
+```{r echo = F, message = F, warning=F}
+library("tidyverse")
+library(ggplot2)
+
+emissions_from_fuel_data_df <- emissions_from_fuel_data %>%
+  select(year, residential_total, commercial_total, industrial_total,
+         transportation_total, electric_generation_total,
+         net_imports_of_electricity) %>%
+  gather(key = "variable", value = "value", -year)
+
+ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) + 
+  geom_line(aes(color = variable)) +
+  geom_point(size = 1, color = "darkgray") +
+  scale_color_manual(values=c("grey", "grey", "grey", "grey", "grey", "red")) +
+  scale_color_discrete(name = "GHG Source", labels = c("Commercial", "Electric Generation", "Industrial","Net Imports of Electricity", "Residential", "Transportation")) +
+ggtitle("New York State GHG Emissions by Source") +
+  xlab("Year") +
+  ylab("Million Metric Tons of GHG")
 
 ```
 
-This is a scatter plot of paper vs. mgp capture rate (nothing interesting looking at either with overall):
-```{r echo=FALSE}
-ggplot(rec_use, aes(x = paper_rate, y = mgp_rate)) +
-  geom_point() +
-  geom_smooth()
+The elevated levels of emissions caused by transportation immediately jump out. This suggests that cars, trucks, and other motor vehicles are some of the biggest local culprits.
+
+Interestingly, this pattern does not fully hold when considering just New York City, as stationary fuel burners represent a larger problem here:
+
+```{r fig.width=10, echo = F, message = F, warning=F}
+ggplot(fuel_emission_factors_data, aes(x=source, y=co2e_kg_unit__fossil_, fill=sector)) +
+  geom_bar(stat="identity") +
+  scale_fill_discrete(name = "GHG Source", labels = c("#2 Fuel Oil (Buildings)", "#2 Fuel Oil (Industrial)", "#4 Fuel Oil (Buildings)","#4 Fuel Oil (Industrial)", "#6 Fuel Oil (Buildings)", "#6 Fuel Oil (Industrial)", "Aviation Gasoline", "Biodiesel - Heavy Duty Trucks", "Biodiesel - Biogenic Carbon", "CNG - Buses", "Diesel - Bus", "Diesel - Heavy Duty Vehicles", "Diesel - Light Trucks", "Diesel - Marine (In Port)", "Diessel - Rail Locomotive", "Diesel Passenger Cars", "Ethanol (E100) - Passenger Car", "Gasoline - Light Trucks", "Gasoline - Passenger Cars", "Jet Fuel", "Kerosene", "Natural Gas (Buildings)","Natural Gas - Industrial", "Propane")) +
+ggtitle("New York State GHG Emissions by Source") +
+  xlab("Source") +
+  ylab("IDK What These Are LOL") +
+  theme_grey(16)
+  
 ```
 
-Looking at it with parallel coordinates:
-```{r echo=FALSE}
-ggparcoord(rec_use, columns=3:5,  alphaLines = .5,
-           splineFactor = 10, scale = 'uniminmax') +
-  scale_color_colorblind()
-```
+Here, it is important to note two crucial limitations of our data. Firstly, the data set for NYC emissions only represents 1 year - 2016. It is possible that we were unlucky, and this is an outlier. Secondly, NYC Open Data does provide methodology for measurement. This is quite important for this particular question. New York is a city with many commuters, and it is unclear if emissions from cars driven by people who do not live in the city but work in it are included. 
 
+Still, caveats aside, the dip in the importance of transportation (IS THER ONE???) does coincide with zooming in on a city that prioritizes walking and public transportation, suggesting that commuter driving may be a very important subgset of transportation emissions.
 
-Maybe exclude overall?:
-```{r echo=FALSE}
-ggparcoord(rec_use, columns=4:5,  alphaLines = .5,
-           splineFactor = 10, scale = 'uniminmax') +
-  scale_color_colorblind()
-```
+On the other hand, the plot also demonstrates the clear importance of buildings when considering the city's GHG emissions, warranting a closer look at building emissions in the city. As a first step, we consider the locations of our worst emitters:
 
-And diversion rate (for comparison - Virginia hits in the 40s):
-```{r echo=FALSE}
-ggplot(rec_use, aes(x = month, y = diversion_rate, group = Zone)) +
-  geom_line(aes(color = Zone)) +
-  scale_color_colorblind() +
-  xlab("Month") +
-  ylab("Typical Overall Capture Rate")
-```
-
-Where are buildings?
-```{r echo=FALSE}
-ggplot(df_build, aes(x = Longitude, y = Latitude)) +
-  geom_point(aes(size = footage))
-```
-
-Trying to size based on ghg emissions:
-```{r echo=FALSE}
-ggplot(df_build_energy, aes(x = Longitude, y = Latitude)) +
-  geom_point(aes(size = ghg))
-```
-
-Lower Portion of Electricity Usage:
-```{r echo=FALSE}
-ggplot(filter(df_build_energy, electricty >= 0 & electricty <= 2393650), aes(x = electricty, y = borough, group = borough, fill = borough)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = seq(from = 0, to = 2393650, by = 239365)) +
-  xlab("kWh of Electricity Used") +
-  ylab("Borough") +
-  theme(axis.text.x = element_text(angle = 45,  hjust=1)) +
-  geom_vline(xintercept = median(filter(df_build_energy, electricty >= 0 & electricty <= 2393650)$electricity))
-
-```
-
-Higher Portion (26 high outliers included nowhere):
-```{r echo=FALSE}
-ggplot(filter(df_build_energy, electricty > 2393650 & electricty <= 50905470), aes(x = electricty, y = borough, group = borough, fill = borough)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = seq(from = 2393650, to = 50905470, by = 4851182)) +
-  xlab("kWh of Electricity Used") +
-  ylab("Borough") +
-  theme(axis.text.x = element_text(angle = 45,  hjust=1))
-```
-
-GhG Emissions:
-```{r echo=FALSE}
-ggplot(filter(df_build_energy, ghg <= 2952), aes(x = ghg, y = borough, group = borough, fill = borough)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = seq(from = 0, to = 2952, by = 295)) +
-  xlab("Metric Tons of Green House Gas Emissions") +
-  ylab("Borough") +
-  theme(axis.text.x = element_text(angle = 45,  hjust=1))
-```
-
-This is a Cleveland Dot Plot of greenhouse gas emissions:
-
-```{r fig.height = 20, echo=FALSE}
+```{r fig.height = 20, echo=FALSE, message = F, warning=F}
 ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
   geom_point() +
-  xlab("Average Green House Gas Emissions") +
-  ylab("Borough - Zip Code")
+  xlab("Metric Tons of GHG Emissions per Building") +
+  ylab("Borough - Zip Code") +
+  scale_x_continuous(label = comma) +
+  theme_grey(16) 
+  
 
 ```
 
-Ridges Based on Building Type:
+While the 11370 zip code in Queens stands out as a particularly high emitter, Manhattan appears to be the borough with the most highly damaging buildings.
 
-```{r fig.height=20, fig.width=15, echo=FALSE}
-ggplot(filter(df_build_energy, ghg <= 2952), aes(x = ghg, y = `Primary.Property.Type...Self.Selected`, group = `Primary.Property.Type...Self.Selected`, fill = `Primary.Property.Type...Self.Selected`)) +
+Of equal value is a better understanding of the types of buildings that are most often responsible for high emissions - shown below. Prior to considering the graph, we note that results here are filtered. Specifically, we considering only buildings with GHG emissions of 2,952 metric tons or fewer. This threshold was landed on after several rounds of graphing made it clear that anything above this threshold skewed the graph in such a way as to make it difficult to read. The buildings kept represent over 96% of all observations. 
+
+```{r fig.height=20, fig.width=15, echo=FALSE, message = F, warning=F}
+ggplot(filter(df_build_energy, ghg <= 2952), 
+       aes(x = ghg,
+           y = primary_property_type__self_selected,
+           group = primary_property_type__self_selected,
+           fill = primary_property_type__self_selected)) +
   geom_density_ridges() +
   theme_ridges() +
   theme(legend.position = "none") +
-  scale_x_continuous(breaks = seq(from = 0, to = 2952, by = 295)) +
+  scale_x_continuous(label = comma, breaks = seq(from = 0, to = 2952, by = 295)) +
   xlab("Metric Tons of Green House Gas Emissions") +
   ylab("Building Type") +
-  theme(axis.text.x = element_text(angle = 45,  hjust=1))
+  theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
 ```
+
+Three building type's distributions of emissions jump out as particularly high - Wholesale Club/Supercenter, Prison/Incarceration, and Other - Utility. It is unclear what the latter references. Regarding prison, it seems fairly straightforward that a compound filled with many, many people and complex security systems would have high energy usage. The Club/Supercenter building is perhaps most interesting when considered as a pair along with Ice/Curling Rink - another fairly high distribution. It may be the case that large cooling efforts in the city are particularly bad for the environment.
+
+Before drawing any concrete conclusions, we should, however, point out some issues with our data. This is a data set for 1 year (2019), so there is a risk that it was an aberrant year. Perhaps more importantly, as a reminder, these are only buildings covered by Local Law 84, which is based on square footage thresholds. This means that we are likely only considering the worst emissions buildings throughout the city. It's possible that our understanding of the locales and building types most responsible for emissions would shift if we had a more complete picture.
+
+If we were to estimate New York's building overall, though, we may be somewhat surprised by the results. We consider the following:
+
+First - as Local Law 84 separates our dataset based on square footage, we check whether this has a significant role in GHG emissions:
+
+```{r echo = F, message = F, warning=F}
+
+ggplot(filter(df_build_energy, ghg %in% 0:2952 
+              & building_area < 1000000 
+              & dof_gross_floor_area_ft_ < 1000000),
+       aes(x = dof_gross_floor_area_ft_, y = ghg)) +
+  geom_point() +
+  xlab("Total Square Footage") +
+  ylab("Metric Tons of GHG Emissions") +
+  scale_y_continuous(label = comma) +
+  ggtitle("Square Footage - GHG Emissions Relationship")
+```
+
+While some zero values may skew the overall picutre, there does appear to be a generally positive correlation between the two. As such, in order to estimate total emissions, we take the sum of all documented GHG emissions by the the sum of all of documented square footage - this gives us a metric of GHG emissions per square foot. The calculation gives about 0.0056 metric tons of GHG emissions per square foot.
+
+Next, we apply this to the total square footage documented in land use data set. This dataset (with roughly 30 times as many buildings as the energy use dataset) has 5,584,887,007 total square feet documented in New York City. This comes out to a grand total of an estimate 31,099,387 metric tons of GHG emissions from New York City in 2019. To put this number into context, Google Sustainability Initiative estimates that in the same year [San Francisco emitted 4,360,000 metric tons of GHG](https://insights.sustainability.google/places/ChIJIQBpAG2ahYAR_6128GcTUEo/buildings?ty=2019). Obviously, New York's number is much larger. However, New York's population is also [about 9.46 times larger than San Francisco's](https://www.census.gov/quickfacts/fact/table/sanfranciscocitycalifornia,newyorkcitynewyork/PST045219). So, while our estimated(!) GHG emissions are 7.13 times larger San Francisco's, on a per person basis each of us actually responsibility for about 75.4% of the building emissions of one San Franciscan.
+
+Having taken stock of the current state of New York's environmental impact, we shift our focus towards potential solutions. 
+
+We
+
+Given the importance of transportation emissions statewide, and the decrease in its importance in a less car-dependent area, we begin with a consideration of on-road vehicles. Specifically, we review electric vehicles.
+
+To begin, we compare the United States' overall EV adoption rate to the rest of the world.:
+
+```{r echo = F, message = F, warning=F}
+global_electric_car_sales_df <- global_electric_car_sales_data %>%
+  select(x, china, usa, europe, japan) %>%
+  gather(key = "variable", value = "value", -x)
+
+ggplot(global_electric_car_sales_df, aes(x = x, y = value, fill = variable)) + 
+  geom_bar(stat="identity", right = T) +
+  scale_fill_discrete(name = "Country", labels = c("China", "Europe", "Japan", "United States"))+
+  xlab("Year") +
+  ylab("IDK what these are") +
+  ggtitle("Electric Vehicle Purchases Over Time") +
+  scale_x_continuous(breaks = seq(2010, 2020, 1)) +
+  xlab("Year")
+
+```
+
+While the volume of EVs purchased over time is mostly a function of population size, rate of growth does not necessarily need to be. And the United States is clearly lacking in this area (especially as compared to China).
+
+In order to understand if New York is a part of this trend or a bright spot, we consider the state's current rebate program for Electric Vehicles. 
+```{r echo = F, message = F, warning=F}
+# rebates started in 2017
+energy_program_participants = energy_programs_data %>% 
+  filter(year > 2016 & year < 2021 
+         & program_name == 'Electric Vehicles - Rebate'
+         & reporting_period != '2020 Q4') %>%
+  select(reporting_period,
+         direct_participants_counts_commitments_planned_to_date,
+         direct_participants_counts_acquired_to_date) %>%
+  gather(key = "variable", value = "value", -reporting_period)
+
+ggplot(energy_program_participants, 
+       aes(x = reporting_period,
+           y = value,
+           fill = variable)) + 
+  geom_bar(stat = "identity",position="dodge") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  scale_fill_discrete(labels = c(
+    direct_participants_counts_acquired_to_date="Participants Acquired",
+    direct_participants_counts_commitments_planned_to_date="Participants Planned"))+
+  ggtitle("EV Cumulative Sales - Planned vs. Actual") +
+  scale_y_continuous(label = comma) +
+  ylab("Electric Vehicles Sold with Rebate to Date") +
+  xlab("Reporting Period")
+```
+Similar to the country at large, we see slow adoption, even with the rebate. However, whether this is due to lack of interest is difficult to say. Beginning in late 2018, the number of vehicles purchased via the rebate has consistently outperformed expectations, and the rules of the rebate are such that not all people above this planned threshold will receive it. This could suggest that there is perhaps not an overwhelming natural desire EVs, but a healthy one for EVs with a rebate. An increased cap could potentially spur more major growth in this area.
+
+
+Also of note is the increase in emissions reductions via the program:
+
+```{r echo = F, message = F, warning=F}
+energy_programs_data_df = energy_programs_data %>% 
+  filter(year > 2016 & year < 2021 
+         & reporting_period != '2020 Q4'
+         & program_name == 'Electric Vehicles - Rebate') %>%
+  select(reporting_period,
+         direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date,
+         direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date) %>%
+  gather(key = "variable", value = "value", -reporting_period)
+
+ggplot(energy_programs_data_df, 
+       aes(x = reporting_period,
+           y = value,
+           fill = variable)) + 
+  geom_bar(stat = "identity",position="dodge") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  scale_fill_discrete(labels = c(
+    direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date="Actual Reductions",
+    direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="Planned Reduction")) +
+  xlab("Reporting Period") +
+  ylab(TeX("Metric Tons of $\\CO_2$")) +
+  ggtitle(TeX("Resulting $\\CO_2$ Reductions - Planned vs. Actual"))+
+  scale_y_continuous(label = comma)
+```
+
+Similarly to the rebate participants, since late 2018 actual emissions reductions have exceeded planeed reductions. Of extra note, however, is that actually reductions appear to exceed planned by a larger margin that rebate participation. This suggests that, while access to the rebate may be a motivating factor, a desire the lowest emission vehicles available may be as well.
+
+
+Cumualtive rebate $
+```{r echo = F, message = F, warning=F}
+ggplot(clean_rebate_data_by_quarter, 
+       aes(x = factor(year_quarter),
+           y = cumulative_rebate_amount)) + 
+  geom_bar(stat = "identity") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  ylab("Total Rebates Given to Date") +
+  xlab("Reporting Period") +
+  scale_y_continuous(label = dollar_format()) +
+  ggtitle("Cumulative Rebates")
+```
+
+I DON'T HAVE COMMENTARY FOR THIS/I THINK IT'S BASICALLY THE SAME AS THE ACUTAL VS. PLANNED LARRY
+
+quarter rebate $
+```{r echo = F, message = F, warning=F}
+ggplot(clean_rebate_data, 
+       aes(x = factor(year_quarter),
+           y = rebate_amount_usd_)) + 
+  geom_bar(stat = "identity", aes(group=year_quarter)) +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  scale_y_continuous(label = dollar_format()) +
+  ylab("Rebate Amount") +
+  xlab("Reporting Period") +
+  ggtitle("Rebates Given by Quarter")
+```
+I DON'T HAVE COMMENTARY FOR THIS
+
+Zooming out, we consider rebate amounts each year of the program:
+```{r echo = F, message = F, warning=F}
+ggplot(clean_rebate_data, 
+       aes(x = year,
+           y = rebate_amount_usd_)) + 
+  geom_bar(stat = "identity", aes(group=year)) +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90))+
+  scale_y_continuous(label = dollar_format()) +
+  ylab("Rebate Amount") +
+  xlab("Year") +
+  ggtitle("Rebates Given by Year")
+```
+We see a somewhat linear growth pattern. While a simple line would certainly not fit the data perfectly, it does fit well enough for rough estimates of potential future usage.
+
+Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 (at the intersection of the red line):
+```{r echo = F, message = F, warning=F}
+clean_rebate_regression_data = select(clean_rebate_data_by_quarter,
+                                      cumulative_rebate_amount, 
+                                      year_quarter)
+clean_rebate_regression_data$quarter_as_int <- seq.int(nrow(clean_rebate_regression_data))
+# y is quarters out from 1 = 2017 Q1
+# lm_rebate = lm(quarter_as_int ~ cumulative_rebate_amount, data = clean_rebate_regression_data)
+# slope = lm_rebate$coefficients['cumulative_rebate_amount']
+# 
+# new = data.frame(cumulative_rebate_amount = c(60000000))
+# quarter_estimate = round(predict(lm_rebate, new))
+# y is $
+lm_rebate = lm(cumulative_rebate_amount ~ quarter_as_int, data = clean_rebate_regression_data)
+slope = lm_rebate$coefficients['quarter_as_int']
+quarters_to_predict = c(18:30)
+new = data.frame(quarter_as_int = quarters_to_predict)
+dollar_estimate = data.frame(cumulative_rebate_amount = round(predict(lm_rebate, new)))
+dollar_estimate$quarter_as_int = quarters_to_predict
+# fill in years
+start = as.Date(as.yearqtr("2021 Q2"))
+end = as.Date(((length(quarters_to_predict) * .25) - .25) + as.yearqtr("2021 Q2"))
+fill_in_quarters <- as.yearqtr(seq.Date(from=start, to = end, by="quarter"), format = "%Y-%m-%d")
+dollar_estimate$year_quarter = fill_in_quarters
+final_reg <- rbind(clean_rebate_regression_data, dollar_estimate)
+# TODO for interactive piece: take a # to cut off cum rebate at
+```
+
+```{r echo = F, message = F, warning=F}
+ggplot(final_reg,
+       aes(x=factor(year_quarter),
+           y=cumulative_rebate_amount)
+       ) + 
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = 60000000, color = "red", linetype="dotted") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  ylab("Total Predicted Rebates to Date") +
+  xlab("Reporting Period") +
+  scale_y_continuous(label = dollar_format()) +
+  ggtitle("Predicted Cumulative Rebates")
+```
+This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
