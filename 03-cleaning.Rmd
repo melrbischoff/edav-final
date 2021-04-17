@@ -1,12 +1,12 @@
 # Data transformation
 
-To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. In addition, we formatted date data and made use of a combination of piping and grouping to get counts for rebates.
+To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. We also formatted date data and made use of a combination of piping and grouping to get counts for rebates. In order to analyze the data over time, we aggregated it by quarter of the year.
 
 Next, we reshape our recycling data to be grouped by borough, using the median zone rates to represent the typical for each borough. We also create a second month variable for ease of access.
 
-Further, the key dataset used for NYC building energy usage was missing key data. Specifically, not all observations had the borough field populated, and it had nothing on the previously mentioned 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping (df_zips, trimmed to be only zip and borough) and land-use datasets (df_area_full) in order to access this desired information:
+Further, the key dataset used for NYC building energy usage was missing important data. Specifically, not all observations had the borough field populated, and it had nothing on 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping dataset and the land-use dataset in order to access the desired information.
 
-In addition, the key greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data for further by grouping by borough and zip code and taking both the mean and median GHG emissions for each. As previously noted, a singul negative value for GHG emissions was found. It is filtered out here, as well.
+In addition, the greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data further by grouping by borough and zip code and taking both the mean and median GHG emissions for each. As previously noted, a single negative value for GHG emissions was found. It is filtered out here.
 
 ```{r include = FALSE}
 library(tidyverse)
@@ -15,12 +15,6 @@ library(zoo)
 library(lubridate)
 library(ggplot2)
 library(latex2exp)
-
-# from resources.xlsx
-# ev_charging_use_data = resources_sheets$`Charging Use`
-
-# use clean_rebate_data instead - more up to date but same thing
-# ev_rebate_data = resources_sheets$`Drive Clean Rebate`
 
 # from EV-Registration-Tables.xlsx
 ev_zip_code_data = ev_registration_tables_sheets$`Current by ZIP Code`
@@ -42,13 +36,6 @@ names(energy_programs_data) = cleanCols(energy_programs_data)
 names(emissions_from_fuel_data) = cleanCols(emissions_from_fuel_data)
 names(fuel_emission_factors_data) = cleanCols(fuel_emission_factors_data)
 names(clean_rebate_data) = cleanCols(clean_rebate_data)
-# names(ev_registrations_data) = cleanCols(ev_registrations_data)
-#names(federal_cvrp_stats) = cleanCols(federal_cvrp_stats)
-#NOTE - IDK WHAT IS GOING ON WITH CVRP LARRIES
-#names(ev_rebate_data) = cleanCols(ev_rebate_data)
-#NOTE - I DON'T SEE AN EV REBATE LARRY IN THE DATA SECTIONS
-
-# ev_original_registrations_data = filter(ev_registrations_data, registration == 'Original')
 
 clean_rebate_data$date = as.Date(clean_rebate_data$submitted_date, "%m/%d/%Y")
 clean_rebate_data$year = format(clean_rebate_data$date, format="%Y")
@@ -63,12 +50,12 @@ clean_rebate_counts = clean_rebate_data %>% group_by(year_quarter) %>% tally()
 clean_rebate_data_by_quarter = aggregate(clean_rebate_data$rebate_amount_usd_,
                                          by=list(clean_rebate_data$year_quarter),
                                          FUN=sum)
-#IDK WHY BUT YEAR_QUARTER WAS LOSING ITS NAME - ADDING HERE
+
 clean_rebate_data_by_quarter$year_quarter = clean_rebate_data_by_quarter$`Group.1`
 clean_rebate_data_by_quarter$rebate_amount = clean_rebate_data_by_quarter$x
 
 clean_rebate_data_by_quarter$cumulative_rebate_amount = cumsum(clean_rebate_data_by_quarter$rebate_amount)
-#SEEING A WEIRD ERROR ABOUT "REPLACEMENT HAS 0 ROWS, DATAS 17 CALLS
+
 clean_rebate_data_by_quarter$count = clean_rebate_counts$n
 
 

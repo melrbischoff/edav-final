@@ -38,7 +38,6 @@ ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) +
 ggtitle("New York State GHG Emissions by Source") +
   xlab("Year") +
   ylab("Million Metric Tons of GHG")
-
 ```
 
 The elevated levels of emissions caused by transportation immediately jump out. This suggests that cars, trucks, and other motor vehicles are some of the biggest local culprits.
@@ -53,7 +52,6 @@ ggtitle("New York State GHG Emissions by Source") +
   xlab("Source") +
   ylab("IDK What These Are LOL") +
   theme_grey(16)
-  
 ```
 
 Here, it is important to note two crucial limitations of our data. Firstly, the data set for NYC emissions only represents 1 year - 2016. It is possible that we were unlucky, and this is an outlier. Secondly, NYC Open Data does provide methodology for measurement. This is quite important for this particular question. New York is a city with many commuters, and it is unclear if emissions from cars driven by people who do not live in the city but work in it are included. 
@@ -69,8 +67,6 @@ ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
   ylab("Borough - Zip Code") +
   scale_x_continuous(label = comma) +
   theme_grey(16) 
-  
-
 ```
 
 While the 11370 zip code in Queens stands out as a particularly high emitter, Manhattan appears to be the borough with the most highly damaging buildings.
@@ -101,7 +97,6 @@ If we were to estimate New York's building overall, though, we may be somewhat s
 First - as Local Law 84 separates our dataset based on square footage, we check whether this has a significant role in GHG emissions:
 
 ```{r echo = F, message = F, warning=F}
-
 ggplot(filter(df_build_energy, ghg %in% 0:2952 
               & building_area < 1000000 
               & dof_gross_floor_area_ft_ < 1000000),
@@ -138,10 +133,9 @@ ggplot(global_electric_car_sales_df, aes(x = x, y = value, fill = variable)) +
   ggtitle("Electric Vehicle Purchases Over Time") +
   scale_x_continuous(breaks = seq(2010, 2020, 1)) +
   xlab("Year")
-
 ```
 
-While the volume of EVs purchased over time is mostly a function of population size, rate of growth does not necessarily need to be. And the United States is clearly lacking in this area (especially as compared to China).
+While the market share of EVs purchased over time is mostly a function of population size, rate of growth per country is not. The United States' EV adaption growth clearly lags behind Europe and China. 
 
 In order to understand if New York is a part of this trend or a bright spot, we consider the state's current rebate program for Electric Vehicles. 
 ```{r echo = F, message = F, warning=F}
@@ -169,11 +163,10 @@ ggplot(energy_program_participants,
   ylab("Electric Vehicles Sold with Rebate to Date") +
   xlab("Reporting Period")
 ```
-Similar to the country at large, we see slow adoption, even with the rebate. However, whether this is due to lack of interest is difficult to say. Beginning in late 2018, the number of vehicles purchased via the rebate has consistently outperformed expectations, and the rules of the rebate are such that not all people above this planned threshold will receive it. This could suggest that there is perhaps not an overwhelming natural desire EVs, but a healthy one for EVs with a rebate. An increased cap could potentially spur more major growth in this area.
+Since the beginning of the electric vehicle rebate program in New York, we see slow and steady adoption. Beginning in late 2018, the number of vehicles purchased via the rebate has consistently outperformed expectations. The overflow amount of participants acquired still receive the rebate; however, this suggests that we will run out of budget faster than expected. We also conclude from this graph that rebate is a strong incentive for New York residents to buy  an electric car.
 
 
 Also of note is the increase in emissions reductions via the program:
-
 ```{r echo = F, message = F, warning=F}
 energy_programs_data_df = energy_programs_data %>% 
   filter(year > 2016 & year < 2021 
@@ -199,10 +192,8 @@ ggplot(energy_programs_data_df,
   scale_y_continuous(label = comma)
 ```
 
-Similarly to the rebate participants, since late 2018 actual emissions reductions have exceeded planeed reductions. Of extra note, however, is that actually reductions appear to exceed planned by a larger margin that rebate participation. This suggests that, while access to the rebate may be a motivating factor, a desire the lowest emission vehicles available may be as well.
+Similarly to the rebate participants, since late 2018 emissions reductions have exceeded planned reductions. Additionally, reductions appear to exceed planned reductions by a larger margin than rebate participation. This suggests that, while access to the rebate may be a motivating factor, a desire the lowest emission vehicles available may be as well. This can also be due to increased R&D from the manufacturers' sides to make their vehicles more efficient.
 
-
-Cumualtive rebate $
 ```{r echo = F, message = F, warning=F}
 ggplot(clean_rebate_data_by_quarter, 
        aes(x = factor(year_quarter),
@@ -251,29 +242,21 @@ clean_rebate_regression_data = select(clean_rebate_data_by_quarter,
                                       cumulative_rebate_amount, 
                                       year_quarter)
 clean_rebate_regression_data$quarter_as_int <- seq.int(nrow(clean_rebate_regression_data))
-# y is quarters out from 1 = 2017 Q1
-# lm_rebate = lm(quarter_as_int ~ cumulative_rebate_amount, data = clean_rebate_regression_data)
-# slope = lm_rebate$coefficients['cumulative_rebate_amount']
-# 
-# new = data.frame(cumulative_rebate_amount = c(60000000))
-# quarter_estimate = round(predict(lm_rebate, new))
-# y is $
+
 lm_rebate = lm(cumulative_rebate_amount ~ quarter_as_int, data = clean_rebate_regression_data)
 slope = lm_rebate$coefficients['quarter_as_int']
 quarters_to_predict = c(18:30)
 new = data.frame(quarter_as_int = quarters_to_predict)
 dollar_estimate = data.frame(cumulative_rebate_amount = round(predict(lm_rebate, new)))
 dollar_estimate$quarter_as_int = quarters_to_predict
+
 # fill in years
 start = as.Date(as.yearqtr("2021 Q2"))
 end = as.Date(((length(quarters_to_predict) * .25) - .25) + as.yearqtr("2021 Q2"))
 fill_in_quarters <- as.yearqtr(seq.Date(from=start, to = end, by="quarter"), format = "%Y-%m-%d")
 dollar_estimate$year_quarter = fill_in_quarters
 final_reg <- rbind(clean_rebate_regression_data, dollar_estimate)
-# TODO for interactive piece: take a # to cut off cum rebate at
-```
 
-```{r echo = F, message = F, warning=F}
 ggplot(final_reg,
        aes(x=factor(year_quarter),
            y=cumulative_rebate_amount)

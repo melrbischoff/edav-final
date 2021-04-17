@@ -1,7 +1,6 @@
 # Data sources
 
 ```{r, include=FALSE}
-# install.packages("bookdown")
 library(ggthemes)
 library(readxl)
 library(scales)
@@ -10,9 +9,6 @@ library(tinytex)
 
 # https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4
 emissions_from_fuel_data = read.csv("datasets/ev_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
-
-# # https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/w5he-u64t
-# greenhouse_emissions_data = read.csv("datasets/ev_data_sets/nys/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Electricity_Emission_Factors__2005-2016_.csv")
 
 # https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b
 fuel_emission_factors_data = read.csv("datasets/ev_data_sets/nys/Inventory_of_New_York_City_Greenhouse_Gas_Emissions_-_Fuel_Emission_Factors__2016_.csv")
@@ -26,12 +22,6 @@ global_electric_car_sales_data = read.csv("datasets/ev_data_sets/global-electric
 # EValuate NY data
 # https://www.nyserda.ny.gov/All-Programs/Programs/ChargeNY/Support-Electric/Data-on-Electric-Vehicles-and-Charging-Stations
 
-# EV registrations in NY (zip code, car model, dates)
-# ev_registrations_data = read.csv("datasets/ev_data_sets/nys/ny_ev_registrations.csv")
-
-# https://data.ny.gov/Energy-Environment/Electric-Vehicle-Charging-Stations-in-New-York/7rrd-248n
-ev_charging_data = read.csv("datasets/ev_data_sets/nys/Electric_Vehicle_Charging_Stations_in_New_York.csv")
-
 # https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y
 clean_rebate_data = read.csv("datasets/ev_data_sets/nys/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
     
@@ -43,9 +33,7 @@ read_excel_sheets <- function(filename, tibble = FALSE) {
     x
 }
 
-# resources_sheets <- read_excel_sheets("ev_data_sets/nys/resources.xlsx")
 ev_registration_tables_sheets <- read_excel_sheets("datasets/ev_data_sets/nys/evaluate_ny_EV-Registration-Tables.xlsx")
-# evaluate_ny_sheets <- read_excel_sheets("datasets/ev_data_sets/nys/evaluate_ny_EValuateNY.xlsx")
 
 df_rec <- read.csv("datasets/Recycling_Diversion_and_Capture_Rates.csv")
 df_build_energy_source <- read.csv("datasets/Energy_and_Water_Data_Disclosure_for_Local_Law_84_2020__Data_for_Calendar_Year_2019_.csv")
@@ -58,25 +46,26 @@ On the city level, our key data source is NYC Open Data - [located here](https:/
 
 To begin, we wanted to understand how well NYC recycles, so we turned to a simple [recycling diversion and capture dataset](https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz). The data shows diversion and capture rates (as well as a breakout of the latter) for each zone and district in each borough for each month of 2019. It has approximately 2,800 observations.
 
-In order to take stock of current emission factors, we rely mostly on two key datasets. First, we use an [inventory of sources of greenhouse gas emissions from fuel emissions in NYC](https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b). The most crucial variables available are sector (e.g. natural gas, propane), source (e.g. stationary, on-road mobile) and CO$_2$ emission rates. Due to the grouped nature of the data, the set itself is quite manageable, with only 24 observations. 
+In order to take stock of current emission factors, we rely mostly on two key datasets.\
+First, we use an [inventory of sources of greenhouse gas emissions from fuel emissions in NYC](https://data.cityofnewyork.us/Environment/Inventory-of-New-York-City-Greenhouse-Gas-Emission/9jf7-zn7b). The most crucial variables available are sector (e.g. natural gas, propane), source (e.g. stationary, on-road mobile) and CO$_2$ emission rates. Due to the grouped nature of the data, the set itself is quite manageable, with only 24 observations.
 
-The second key dataset for understanding New York City greenhouse gas emissions contains [energy and water disclose data](https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/qb3v-bbre) for buildings - specifically, buildings covered by [local law 84](https://www1.nyc.gov/assets/buildings/local_laws/ll84of2009.pdf). The dataset contains variables such as zip code, BBL (a uniuqe property identifier), total square footage, kilowatt hours of electricity consumed and total metric tons of greenhouse gas emissions for buildings. The set has approximately 29,000 observations. One immediately apparent issue was the presence of negative GHG emissions for one observation. It seems to be an obvious error and is filtered out. Further Issues regarding the data will be discussed in relation to a second dataset, as well as in section III and IV.
+The second key dataset for understanding New York City greenhouse gas emissions contains [energy and water disclose data](https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/qb3v-bbre) for buildings - specifically, buildings covered by [local law 84](https://www1.nyc.gov/assets/buildings/local_laws/ll84of2009.pdf). The dataset contains variables such as zip code, BBL (a unique property identifier), total square footage, kilowatt hours of electricity consumed and total metric tons of greenhouse gas emissions for buildings. The set has approximately 29,000 observations. One immediately apparent issue was the presence of negative GHG emissions for one observation. It seems to be an obvious error and is filtered out. Further issues regarding the data will be discussed in relation to a second dataset, as well as in section III and IV.
 
 Also crucial for understanding New York City buildings was a [primary land use dataset](https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks), which also contained BBL and key building measurements for understanding 2D square footage of buildings (i.e. square footage on a single floor). This dataset has over 850,000 obvservations. This highlights a key shortcoming of the preceding dataset referenced, as it offers only a limited sample of buildings documented. Further, it is far from a random sample, as Local Law 84 covers buildings only reaching specific thresholds of square footage. In order to consider the city as a whole, the energy use dataset has to be used in order to make estimations more widely.
 
-## Data NY Gov
+## NY Gov Data
 On the state level, we rely on the state-level counterpart to Open NYC [data.ny.gov](https://data.ny.gov/). This site offers a similar depth and breadth of datasets available. For our purposes, it was particularly useful for understanding the current state of vehicle usage (e.g. greenhouse gas emissions from cars, how many electric vehicles are in circulation, etc.). 
 
-Firstly, we make use of data on [greenhouse gas emissions from fuel combustion](https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4). This dataset is very similar to the city-level one, variables representing metric tons of greenhouse gas emissions from sources such as residential, transportation and commercial activity, with the added benefit of a longer time period represented by the year variable. It is also of similar size to the previous set, 27 observation. This dataset is state-level but also crucial for understanding the city-level data we had, as it demonstrated key contrasts between the city and state. 
+Firstly, we make use of data on [greenhouse gas emissions from fuel combustion](https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4). This dataset is very similar to the city-level one, variables representing metric tons of greenhouse gas emissions from sources such as residential, transportation and commercial activity, with the added benefit of a longer time period represented by the year variable. It is also of similar size to the previous set at 27 observations. While this dataset is state-level, it is also crucial for understanding the city-level data we had, as it demonstrates key contrasts between the city and state. 
 
-From here, we relied heavily on NYSERDA data - a subset of the entire state's data library dedicated to understanding energy research and development. 
+## NYSERDA Data
+From here, we relied heavily on [NYSERDA data](https://www.nyserda.ny.gov/) - a subset of the entire state's data library dedicated to understanding energy research and development. 
 
-Of initial interest is a provided dataset on the state's [status in clean energy programs](https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9). We use this dataset's variables such as program name, direct participants acquisitions planned, and direct participants acquired to date in order to the planned scale and current effectiveness of the state's electric vehicle rebate program. The set has approximately 23,000 observations. 
+Of initial interest is a provided dataset on the state's [status on clean energy programs](https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9). It contains rate-payer funded programs in New York State starting in 2016. We use this dataset to analyze the planned scale and current effectiveness of the state's electric vehicle rebate program using variables such as participants planned, participants acquired, CO2 emission reductions planned, and CO2 emission reductions acquired. The set has approximately 23,000 observations of NYS programs, we focus only on the electric vehicles rebate program.
 
-In concert with the previous dataset listed, we also used one dedicated to [the clean rebate program](https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y). This dataset has variables such make, model, rebate, and zip code. While the previous dataset was crucial for understanding overall program effectiveness, this one gives a more granular view and provides insights into where and how the program is or is not working. It has approximately 37,000 observations.
+In concert with the previous dataset, we also used one dedicated soley to [the clean rebate program](https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y). This dataset has variables such as make, model, rebate amount, and zip code of electric vehicles purchasesd and registered with the rebate applied. While the previous dataset was crucial for understanding overall program effectiveness, this one gives a more granular view and provides insights into where and how the program is or is not working. It has approximately 37,000 observations.
 
 ## Other Data Sources
-We also made use of a [non-Open-NYC dataset](https://data.beta.nyc/en/dataset/pediacities-nyc-neighborhoods/resource/7caac650-d082-4aea-9f9b-3681d568e8a5) to access its variables mapping zip codes to boroughs. It has 177 entries. 
+We also used a [non-Open-NYC dataset](https://data.beta.nyc/en/dataset/pediacities-nyc-neighborhoods/resource/7caac650-d082-4aea-9f9b-3681d568e8a5) to access its variables mapping zip codes to boroughs. It has 177 entries. 
 
-Lastly, while our focus was local, benchmarking is important. As such, we made use of [global electric vehicle data](https://cleanvehiclerebate.org/eng/rebate-statistics) in order to provide insights into how we are pacing in terms of EV use growth.
-NOTE - IDK HOW THIS WAS USED FOR GLOBAL, CHECK WITH MELISSA.
+Lastly, while our focus was local, benchmarking is important. As such, we made use of [global electric vehicle data](https://www.iea.org/data-and-statistics/charts/global-electric-car-sales-by-key-markets-2015-2020) from [IEA](https://www.iea.org/) in order to provide insights into how we are pacing in terms of EV use growth. This data has aggregated global electric car sales in key markets from 2010-2020 to analyze market share.
