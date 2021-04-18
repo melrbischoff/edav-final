@@ -1,7 +1,8 @@
 introduction
 data-sources
 nyc-open-data
-data-ny-gov
+ny-gov-data
+nyserda-data
 other-data-sources
 data-transformation
 missing-values
