@@ -41,8 +41,10 @@ ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) +
   scale_color_discrete(name = "GHG Source", labels = c("Commercial", "Electric Generation", "Industrial","Net Imports of Electricity", "Residential", "Transportation")) +
 ggtitle("New York State GHG Emissions by Source") +
   xlab("Year") +
-  ylab("Million Metric Tons of GHG")
+  ylab("Million Metric Tons of GHG") +
+  scale_x_continuous(breaks = round(seq(min(dat$x), max(dat$x), by = 0.5),1)) +
 ```
+
 
 The elevated levels of emissions caused by transportation immediately jump out. This suggests that cars, trucks, and other motor vehicles are some of the biggest local culprits.
 
@@ -189,26 +191,7 @@ While there does not seem to be one area that would particularly affected, every
 
 Given the importance of transportation emissions statewide, and the decrease in its importance in a less car-dependent area, a consideration of on-road vehicles is also warranted. Specifically, we review electric vehicles.
 
-To begin, we compare the United States' overall EV adoption rate to the rest of the world.:
-
-```{r echo = F, message = F, warning=F}
-global_electric_car_sales_df <- global_electric_car_sales_data %>%
-  select(x, china, usa, europe, japan) %>%
-  gather(key = "variable", value = "value", -x)
-
-ggplot(global_electric_car_sales_df, aes(x = x, y = value, fill = variable)) + 
-  geom_bar(stat="identity", right = T) +
-  scale_fill_discrete(name = "Country", labels = c("China", "Europe", "Japan", "United States"))+
-  xlab("Year") +
-  ylab("IDK what these are") +
-  ggtitle("Electric Vehicle Purchases Over Time") +
-  scale_x_continuous(breaks = seq(2010, 2020, 1)) +
-  xlab("Year")
-```
-
-While the market share of EVs purchased over time is mostly a function of population size, rate of growth per country is not. The United States' EV adaption growth clearly lags behind Europe and China. 
-
-In order to understand if New York is a part of this trend or a bright spot, we consider the state's current rebate program for Electric Vehicles. 
+A plan currently in place in New York to encourage citizens to buy electric cars is the Drive Clean Rebate program. The rebate program offers up to a 2,000 dollar point of sale rebate for the purchase of a qualifying electric vehicle. The state tracks the program's progress by collecting data such as participants acquisition, participant acquisition goals, CO$_2$ emission reductions and CO$_2$ emission reduction goals. We compare these goals to the performance of the program below. Here, a participant is one who buys an electric car and receives a rebate for it.
 ```{r echo = F, message = F, warning=F}
 # rebates started in 2017
 #clean_rebate_data_by_quarter$variable = "cash"
@@ -218,8 +201,38 @@ energy_program_participants = energy_programs_data %>%
          & reporting_period != '2020 Q4') %>%
   select(reporting_period,
          direct_participants_counts_commitments_planned_to_date,
-         direct_participants_counts_acquired_to_date) %>%
+         direct_participants_counts_acquired_to_date)
+
+energy_program_participants$difference = energy_program_participants$direct_participants_counts_commitments_planned_to_date - energy_program_participants$direct_participants_counts_acquired_to_date
+
+diff = energy_program_participants  %>%
+    select(reporting_period,
+           difference)
+
+participants = energy_program_participants  %>%
+    select(reporting_period,
+           direct_participants_counts_commitments_planned_to_date,
+           direct_participants_counts_acquired_to_date)
+
+participants = participants %>%
   gather(key = "variable", value = "value", -reporting_period)
+
+dummy = data.frame(c("2017 Q1", "2017 Q2", "2017 Q3", "2017 Q4", "2018 Q1", "2018 Q2",
+                     "2018 Q3", "2018 Q4", "2019 Q1", "2019 Q2", "2019 Q3", "2019 Q4",
+                     "2020 Q1", "2020 Q2", "2020 Q3"),c(NA))
+
+names(dummy) = c("reporting_period","difference")
+total = rbind(dummy, diff)
+
+final = participants_diff = merge(x = participants,
+                          y = total, 
+                          by = "reporting_period", 
+                          all.x = TRUE)
+
+participants_diff = merge(x = participants,
+                          y = diff, 
+                          by = "reporting_period", 
+                          all.x = TRUE)
 
 ggplot() + 
   geom_bar(energy_program_participants, 
@@ -236,7 +249,6 @@ ggplot() +
   scale_y_continuous(label = comma)+#, sec.axis = sec_axis(~.*10, name = "Total Rebate Amount", label = dollar_format())) +
   ylab("Electric Vehicles Sold with Rebate to Date") +
   xlab("Reporting Period")
-
 # ggplot(energy_program_participants, 
 #        aes(x = reporting_period,
 #            y = value,
@@ -298,21 +310,9 @@ ggplot(clean_rebate_data_by_quarter,
 
 SUPPRESSING OUTPUT BUT KEEPING CUMULATIVE REBATES CODE TO TRY TO FIGURE OUT LINE OVERLAY
 
-Zooming out, we consider rebate amounts each year of the program:
-```{r echo = F, message = F, warning=F}
-ggplot(clean_rebate_data, 
-       aes(x = year,
-           y = rebate_amount_usd_)) + 
-  geom_bar(stat = "identity", aes(group=year)) +
-  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90))+
-  scale_y_continuous(label = dollar_format()) +
-  ylab("Rebate Amount") +
-  xlab("Year") +
-  ggtitle("Rebates Given by Year")
-```
-We see a somewhat linear growth pattern. While a simple line would certainly not fit the data perfectly, it does fit well enough for rough estimates of potential future usage.
+It is clear that the rebate program is working - it has proven that it incentives New Yorkers to buy electric vehicles and thus reduces CO$_2$ emissions. The participants in the program have consistently exceeded the goals and the CO$_2$ emission reductions are much higher than expected. However, this program wont last forever. The budget for the rebate program is currently set at 60 million dollars. With the growing popularity of the program, NY is rapidly running through that budget. New York has already used ~53 million dollars of the rebate budget. If this trend continues, the program and it's positive benefits, will likely come to a halt in the next year or so.
 
-Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 (at the intersection of the red line):
+To analyze when the budget will rum out if EV purchases continue at this rate, we perform a linear regression on the model. The data is complete up to 2021 Q1, so we consider quarters after that to be in the future.
 ```{r echo = F, message = F, warning=F}
 clean_rebate_regression_data = select(clean_rebate_data_by_quarter,
                                       cumulative_rebate_amount, 
@@ -326,23 +326,59 @@ new = data.frame(quarter_as_int = quarters_to_predict)
 dollar_estimate = data.frame(cumulative_rebate_amount = round(predict(lm_rebate, new)))
 dollar_estimate$quarter_as_int = quarters_to_predict
 
-# fill in years
 start = as.Date(as.yearqtr("2021 Q2"))
 end = as.Date(((length(quarters_to_predict) * .25) - .25) + as.yearqtr("2021 Q2"))
 fill_in_quarters <- as.yearqtr(seq.Date(from=start, to = end, by="quarter"), format = "%Y-%m-%d")
 dollar_estimate$year_quarter = fill_in_quarters
 final_reg <- rbind(clean_rebate_regression_data, dollar_estimate)
 
-ggplot(final_reg,
-       aes(x=factor(year_quarter),
-           y=cumulative_rebate_amount)
-       ) + 
-  geom_bar(stat = "identity") +
-  geom_hline(yintercept = 60000000, color = "red", linetype="dotted") +
-  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-  ylab("Total Predicted Rebates to Date") +
+final_reg$curr_fut[final_reg$year_quarter<= as.yearqtr("2021 Q1")]  <- "Reported Data"
+final_reg$curr_fut[final_reg$year_quarter > as.yearqtr("2021 Q1")]  <- "Predicted Data"
+
+plot_reg = filter(final_reg, year_quarter<="2022 Q1")
+plot_reg$budget = as.integer(60000000)
+
+ggplot(plot_reg, 
+       aes(x = factor(year_quarter),
+           y = cumulative_rebate_amount)) + 
+  geom_bar(aes(fill = as.factor(curr_fut)),
+           stat = "identity") +
+  geom_text(data=subset(clean_rebate_data_by_quarter,
+                        year_quarter == '2021 Q1'),
+            aes(x = factor(year_quarter),
+                y = cumulative_rebate_amount,
+                label=comma(cumulative_rebate_amount)),
+            color="red",
+            size=4.5,
+            angle = -90,
+            hjust = -1.6, 
+            vjust = .5) +
+  geom_text(data=subset(clean_rebate_data_by_quarter,
+                        year_quarter == '2021 Q1'),
+            label='current use: $',
+            color="red",
+            angle = -90,
+            size=4.5,
+            hjust = -.3) +
+  geom_smooth(data=filter(plot_reg, year_quarter > "2017 Q2"),
+              aes(x = factor(year_quarter),
+                  y = cumulative_rebate_amount,
+                  colour="purple",
+                  group=1),
+              method = "lm", se= FALSE, color = "darkgreen", size = .5) +
+  geom_hline(mapping=aes(yintercept=60000000, colour="Current Budget"), linetype="dashed") +
+  geom_point(aes(x="2021 Q4", y=60000000),
+             colour="red",
+             shape=18,
+             size=3) +  
+  theme(axis.text.x = element_text(angle = 90)) +
+  ylab("Rebate Amount") +
   xlab("Reporting Period") +
-  scale_y_continuous(label = dollar_format()) +
-  ggtitle("Predicted Cumulative Rebates")
+  ggtitle("Cumulative Rebate Budget Use Over Time")  + 
+  scale_y_continuous(label = dollar_format(),
+                     breaks = seq(0,80000000,by = 5000000)) +
+  scale_colour_manual(name="", 
+                      values = c("Current Budget" = "darkgreen")) +
+  scale_fill_brewer(name = "Data", palette = "Paired") 
 ```
-This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
+Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 denoted by the red point. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
