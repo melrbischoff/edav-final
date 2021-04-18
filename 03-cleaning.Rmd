@@ -9,14 +9,6 @@ Further, the key dataset used for NYC building energy usage was missing importan
 In addition, the greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data further by grouping by borough and zip code and taking both the mean and median GHG emissions for each, as well as mean potential emission reductions. As previously noted, a single negative value for GHG emissions was found. It is filtered out here.
 
 ```{r include = FALSE}
-library(tidyverse)
-library(base)
-library(zoo)
-library(lubridate)
-library(ggplot2)
-library(latex2exp)
-library(RColorBrewer)
-
 # from EV-Registration-Tables.xlsx
 ev_zip_code_data = ev_registration_tables_sheets$`Current by ZIP Code`
 ev_make_model_data = ev_registration_tables_sheets$`Current by Make-Model`
