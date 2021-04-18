@@ -194,9 +194,7 @@ energy_program_participants = energy_programs_data %>%
 participants = energy_program_participants  %>%
     select(reporting_period,
            direct_participants_counts_commitments_planned_to_date,
-           direct_participants_counts_acquired_to_date)
-
-participants_plot = participants %>%
+           direct_participants_counts_acquired_to_date) %>%
   gather(key = "variable", value = "value", -reporting_period)
 
 energy_programs_data_df = energy_programs_data %>% 

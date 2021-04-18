@@ -14,6 +14,9 @@ library(ggplot2)
 library(latex2exp)
 library(RColorBrewer)
 library(gridExtra)
+library(png)
+library(magick)
+library(rsvg)
 
 # https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4
 emissions_from_fuel_data = read.csv("datasets/ev_data_sets/Greenhouse_Gas_Emissions_From_Fuel_Combustion__Million_Metric_Tons__Beginning_1990.csv")
@@ -26,9 +29,6 @@ energy_programs_data = read.csv("datasets/ev_data_sets/nys/NY_Clean_Energy_Dashb
 
 # global electric car sales
 global_electric_car_sales_data = read.csv("datasets/ev_data_sets/global-electric-car-sales-by-key-markets-2010-2020.csv")
-
-# EValuate NY data
-# https://www.nyserda.ny.gov/All-Programs/Programs/ChargeNY/Support-Electric/Data-on-Electric-Vehicles-and-Charging-Stations
 
 # https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y
 clean_rebate_data = read.csv("datasets/ev_data_sets/nys/NYSERDA_Electric_Vehicle_Drive_Clean_Rebate_Data__Beginning_2017.csv")
