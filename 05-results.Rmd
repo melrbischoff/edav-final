@@ -6,9 +6,13 @@ We begin our analysis with a basic measure of how much a community cares about t
 ggplot(rec_use, aes(x = month, y = diversion_rate, group = zone)) +
   geom_line(aes(color = zone)) +
   scale_color_colorblind() +
+  ggtitle(("New York 2019 Recycling")) +
   xlab("Month") +
   ylab("Typical Overall Diversion Rate - %") +
-  geom_hline(yintercept = 43.2)+
+  geom_hline(aes(yintercept = 43.2, linetype = "Virginia Diversion Rate"), colour = "blue") +
+  scale_color_discrete(name = "Zone") +
+  scale_linetype_manual(name = "Comparison Point", values = c(2, 2), 
+                      guide = guide_legend(override.aes = list(color = "blue"))) +
   theme(axis.text.x = element_text(angle = 35, hjust = 1))
 ```
 
@@ -58,16 +62,17 @@ ggtitle("New York State GHG Emissions by Source") +
 
 Here, it is important to note two crucial limitations of our data. Firstly, the data set for NYC emissions only represents 1 year - 2016. It is possible that we were unlucky, and this is an outlier. Secondly, NYC Open Data does provide methodology for measurement. This is quite important for this particular question. New York is a city with many commuters, and it is unclear if emissions from cars driven by people who do not live in the city but work in it are included. 
 
-Still, caveats aside, the dip in the importance of transportation (IS THER ONE???) does coincide with zooming in on a city that prioritizes walking and public transportation, suggesting that commuter driving may be a very important subgset of transportation emissions.
+Still, caveats aside, the dip in the importance of transportation (statewide, transportation is responsible for 90% as many emissions as stationary, compared to 66% in the city) does coincide with zooming in on a city that prioritizes walking and public transportation, suggesting that commuter driving may be a very important subset of transportation emissions.
 
 On the other hand, the plot also demonstrates the clear importance of buildings when considering the city's GHG emissions, warranting a closer look at building emissions in the city. As a first step, we consider the locations of our worst emitters:
 
-```{r fig.height = 20, echo=FALSE, message = F, warning=F}
+```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}
 ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
   geom_point() +
   xlab("Metric Tons of GHG Emissions per Building") +
   ylab("Borough - Zip Code") +
   scale_x_continuous(label = comma) +
+  ggtitle("GHG Emissions per Building by Zip Code")
   theme_grey(16) 
 ```
 
@@ -78,19 +83,20 @@ Of equal value is a better understanding of the types of buildings that are most
 ```{r fig.height=20, fig.width=15, echo=FALSE, message = F, warning=F}
 ggplot(filter(df_build_energy, ghg <= 2952), 
        aes(x = ghg,
-           y = primary_property_type__self_selected,
+           y = reorder(primary_property_type__self_selected, ghg, mean),
            group = primary_property_type__self_selected,
            fill = primary_property_type__self_selected)) +
   geom_density_ridges() +
   theme_ridges() +
   theme(legend.position = "none") +
   scale_x_continuous(label = comma, breaks = seq(from = 0, to = 2952, by = 295)) +
+  ggtitle("GHG Emissions Distributions by Building")+
   xlab("Metric Tons of Green House Gas Emissions") +
   ylab("Building Type") +
   theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
 ```
 
-Three building type's distributions of emissions jump out as particularly high - Wholesale Club/Supercenter, Prison/Incarceration, and Other - Utility. It is unclear what the latter references. Regarding prison, it seems fairly straightforward that a compound filled with many, many people and complex security systems would have high energy usage. The Club/Supercenter building is perhaps most interesting when considered as a pair along with Ice/Curling Rink - another fairly high distribution. It may be the case that large cooling efforts in the city are particularly bad for the environment.
+Interestingly, financial offices have the highest mean GHG emissions per building. This was not an expected result, as finance does not necessarily require large amounts of fuel usage. This is, though, a very interesting result to consider along with the prior analysis of emissions by location. Manhattan, often regarded as the financial center of the city (if not the world) was the worst emitter. Perhaps the presence of many Manhattan zip codes at the top and financial offices' emissions are entwined.  Courthouses are a curiosity without immediately obvious explanation. However, perhaps some of the worst emitters are more expected. For example, supercenters and datacenters (while there are not enough observations for a visible distributions, their average emissions are quite high) both require steady cooling of buildings. It is not necessarily surprising that this type of function could require large amounts of energy.
 
 Before drawing any concrete conclusions, we should, however, point out some issues with our data. This is a data set for 1 year (2019), so there is a risk that it was an aberrant year. Perhaps more importantly, as a reminder, these are only buildings covered by Local Law 84, which is based on square footage thresholds. This means that we are likely only considering the worst emissions buildings throughout the city. It's possible that our understanding of the locales and building types most responsible for emissions would shift if we had a more complete picture.
 
@@ -107,6 +113,7 @@ ggplot(filter(df_build_energy, ghg %in% 0:2952
   xlab("Total Square Footage") +
   ylab("Metric Tons of GHG Emissions") +
   scale_y_continuous(label = comma) +
+  scale_x_continuous(label = comma) +
   ggtitle("Square Footage - GHG Emissions Relationship")
 ```
 
@@ -114,11 +121,80 @@ While some zero values may skew the overall picutre, there does appear to be a g
 
 Next, we apply this to the total square footage documented in land use data set. This dataset (with roughly 30 times as many buildings as the energy use dataset) has 5,584,887,007 total square feet documented in New York City. This comes out to a grand total of an estimate 31,099,387 metric tons of GHG emissions from New York City in 2019. To put this number into context, Google Sustainability Initiative estimates that in the same year [San Francisco emitted 4,360,000 metric tons of GHG](https://insights.sustainability.google/places/ChIJIQBpAG2ahYAR_6128GcTUEo/buildings?ty=2019). Obviously, New York's number is much larger. However, New York's population is also [about 9.46 times larger than San Francisco's](https://www.census.gov/quickfacts/fact/table/sanfranciscocitycalifornia,newyorkcitynewyork/PST045219). So, while our estimated(!) GHG emissions are 7.13 times larger San Francisco's, on a per person basis each of us actually responsibility for about 75.4% of the building emissions of one San Franciscan.
 
+```{r echo = F}
+city <- c("New York City", "San Francisco")
+emissions_per_person <- c(3.73, 4.95)
+
+df_ghg_comp <- data.frame(city, emissions_per_person)
+
+ggplot(df_ghg_comp, aes(city, emissions_per_person)) +
+  geom_bar(stat = "identity") +
+  ylab("Metric Tons of Building GHG Emissions per Person") +
+  xlab("City") +
+  ggtitle("New York City vs. San Francisco Emission Rates")
+```
+
 Having taken stock of the current state of New York's environmental impact, we shift our focus towards potential solutions. 
+
+We begin with a further consideration of buildings, as they represent a potentially crucial resource in New York City's attempts to become more sustainable. Specifically, their rooftops could be used for the implementation of solar panels. Rooftop solar energy represents a titanic opportunity for clean energy generation. For our purposes, we estimate rooftop space in the city via the previously defined 2D square footage. While there are presumably some buildings with roofs smaller than their first floors (or with some parts of the roof that are unusable), this works well enough for a ballpark understanding. This comes out to 618,818,491 feet of roof area.
+
+To understand the opportunity this footage affords, we again turn to Google's Sustainability Initiative. They cite estimate San Francisco's rooftop solar potential as enough to reduce GHG emissions by [917,000 metric tons per year](https://insights.sustainability.google/places/ChIJIQBpAG2ahYAR_6128GcTUEo/solar?ty=2019). This potential is based on 10,500,000 square meters of roof space, equivalent to 113,022,000 square feet. For an estimate of NYC's potential, we develop a rate statistic of metric tons reduces per square foot of rooftop space, equal to 917,000/113,022,000, or 0.0081.
+
+Before applying this rate statistic to the total estimated rooftop space in NYC, we have to note 2 complicating factors. 
+
+First is that location substantially affects solar panel effectiveness. This is because different locations capture different amounts of sunlight. Here, we note that [San Francisco is estimated to capture 67% of potential sunlight annually](https://www1.ncdc.noaa.gov/pub/data/ccd-data/pctpos18.dat). In contrast, New York captures about 55%. This is not a perfect of sunlight capture (total annual sunshine hours would be useful, but this stat was much more difficult to track down). Nonetheless, we use this measure as a rough estimate of the two locations' sunlight capturing ability. For this reason, we must penalize potential solar panel gains in New York by a multiplier equal to 55/67. 
+
+The next complicating factor is that not all rooftops can be used for solar panels. San Francisco is estimated to have 87% of its rooftops eligible. In contrast, New York has been estimated to have [2/3 of its roofs usable](https://www.nytimes.com/2011/06/16/science/earth/16solar.html#:~:text=Mapping%20Sun's%20Potential%20to%20Power%20New%20York,-By%20Mireya%20Navarro&text=Two%2Dthirds%20of%20New%20York,be%20made%20public%20on%20Thursday.). This citation is now a decade old and may be conservative, but it agin will do for ball park purposes.
+
+This leaves us with the following equation for estimating our potential GHG emission reductions via rooftops:
+
+$$
+Reductions = \frac{917,000}{113,022,000} * \frac{55}{67} * \frac{2}{3} * 618,818,491
+$$
+This is equivalent to 2,747,681, or 8.8% of our total building emissions. This is the equivalent of taking 69,000 cars off the road.
+
+
+
+We first consider the building types that could see the biggest differences made (we remove outliers for ease of visibility): 
+
+```{r fig.height=20, fig.width=15, echo=FALSE, message = F, warning=F}
+ggplot(filter(df_build_energy, building_area %in% 0:250000), 
+       aes(x = potential_reductions,
+           y = reorder(primary_property_type__self_selected, potential_reductions, mean),
+           group = primary_property_type__self_selected,
+           fill = primary_property_type__self_selected)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  theme(legend.position = "none") +
+  scale_x_continuous(label = comma)+#, breaks = seq(from = 0, to = 2952, by = 295)) +
+  ggtitle("Potential GHG Reduction Distributions by Building")+
+  xlab("Potential Reductions (Metric Tons)") +
+  ylab("Building Type") +
+  theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
+```
+
+In order to zoom in on the concrete potential difference we could see, we revisit the previously considered cleveland dot plot, now viewing current GHG emissions per building versus potential new averages. 
+
+```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}
+ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg), colour = "Average GHG Emissions")) +
+  geom_point() +
+  geom_point(aes(x = avg_ghg - avg_reductions, y = fct_reorder(place, avg_ghg), colour = "Potential New Average"))+
+  xlab("Metric Tons of GHG Emissions per Building") +
+  ylab("Borough - Zip Code") +
+  scale_x_continuous(label = comma) +
+  scale_colour_discrete(name = "Statistic") +
+  ggtitle("Current GHG Emissions per Building vs. Potential New Average by Zip Code")
+  theme_grey(16) 
+```
+
+While there does not seem to be one area that would particularly affected, every zip code consistently mild to proportionally large gains. Also of interest when considering the mild gains is the implied difference between 2D and 3D square footage. That is, we have previously established the correlation between 3D square footage and GHG emissions, while some of the proportionally smaller reductions in GHG emissions would suggest that 2D square footage is not as correlated with GHG emissions. This is likely a reflection of the fact that New York tends to build buildings upward, rather than out, and each square foot requires energy regardless of direction.
+
+Given the importance of transportation emissions statewide, and the decrease in its importance in a less car-dependent area, a consideration of on-road vehicles is also warranted. Specifically, we review electric vehicles.
 
 A plan currently in place in New York to encourage citizens to buy electric cars is the Drive Clean Rebate program. The rebate program offers up to a 2,000 dollar point of sale rebate for the purchase of a qualifying electric vehicle. The state tracks the program's progress by collecting data such as participants acquisition, participant acquisition goals, CO$_2$ emission reductions and CO$_2$ emission reduction goals. We compare these goals to the performance of the program below. Here, a participant is one who buys an electric car and receives a rebate for it.
 ```{r echo = F, message = F, warning=F}
 # rebates started in 2017
+#clean_rebate_data_by_quarter$variable = "cash"
 energy_program_participants = energy_programs_data %>% 
   filter(year > 2016 & year < 2021 
          & program_name == 'Electric Vehicles - Rebate'
@@ -158,20 +234,36 @@ participants_diff = merge(x = participants,
                           by = "reporting_period", 
                           all.x = TRUE)
 
-ggplot(final, 
-       aes(x = reporting_period,
+ggplot() + 
+  geom_bar(energy_program_participants, 
+       mapping = aes(x = reporting_period,
            y = value,
-           fill = variable)) + 
-  geom_bar(stat = "identity",position="dodge") +
+           fill = variable),stat = "identity",position="dodge") +
+  # geom_line(data = clean_rebate_data_by_quarter, mapping = aes(x = factor(year_quarter),
+  #          y = cumulative_rebate_amount),  group = 1)+
   theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-  scale_fill_discrete(labels = c(
+  scale_fill_discrete(labels = c(#cash = "Total Rebates Received",
     direct_participants_counts_acquired_to_date="Participants Acquired",
-    direct_participants_counts_commitments_planned_to_date="Participant Acquisition Goal"))+
-  ggtitle("EV Rebate Program Cumulative Participants - Goal vs. Actual") +
-  scale_y_continuous(label = comma) +
+    direct_participants_counts_commitments_planned_to_date="Participants Planned"))+
+  ggtitle("EV Cumulative Sales - Planned vs. Actual") +
+  scale_y_continuous(label = comma)+#, sec.axis = sec_axis(~.*10, name = "Total Rebate Amount", label = dollar_format())) +
   ylab("Electric Vehicles Sold with Rebate to Date") +
-  xlab("Reporting Period") +
-  geom_text(aes(label = difference))
+  xlab("Reporting Period")
+# ggplot(energy_program_participants, 
+#        aes(x = reporting_period,
+#            y = value,
+#            fill = variable)) + 
+#   geom_bar(stat = "identity",position="dodge") +
+#   # geom_line(data = clean_rebate_data_by_quarter, aes(x = factor(year_quarter),
+#   #          y = cumulative_rebate_amount), color = "green")+
+#   theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+#   scale_fill_discrete(labels = c(#cash = "Total Rebates Received",
+#     direct_participants_counts_acquired_to_date="Participants Acquired",
+#     direct_participants_counts_commitments_planned_to_date="Participants Planned"))+
+#   ggtitle("EV Cumulative Sales - Planned vs. Actual") +
+#   scale_y_continuous(label = comma)+#, sec.axis = sec_axis(~.*10, name = "Total Rebate Amount", label = dollar_format())) +
+#   ylab("Electric Vehicles Sold with Rebate to Date") +
+#   xlab("Reporting Period")
 ```
 Since the beginning of the electric vehicle rebate program in New York, we see slow and steady adoption. Beginning in late 2018, the number of vehicles purchased via the rebate has consistently outperformed expectations. The overflow amount of participants acquired still receive the rebate; however, this suggests that we will run out of budget faster than expected. We also conclude from this graph that rebate is a strong incentive for New York residents to buy  an electric car.
 
@@ -197,13 +289,26 @@ ggplot(energy_programs_data_df,
     direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date="Actual Reductions",
     direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="Planned Reduction")) +
   xlab("Reporting Period") +
-  ylab(TeX("Metric Tons of $\\CO_2$")) +
-  ggtitle(TeX("Resulting $\\CO_2$ Reductions - Planned vs. Actual"))+
-  scale_y_continuous(label = comma)
+  ylab(TeX("Metric Tons of $\\CO_2$ Reduction to Date")) +
+  ggtitle(TeX("Cumulative Resulting $\\CO_2$ Reductions - Planned vs. Actual"))+
+  scale_y_continuous(label = comma, breaks = seq(0, 600000, by = 50000))
 ```
 
 Similarly to the rebate participants, since late 2018 emissions reductions have exceeded planned reductions. Additionally, reductions appear to exceed planned reductions by a larger margin than rebate participation. This suggests that, while access to the rebate may be a motivating factor, a desire the lowest emission vehicles available may be as well. This can also be due to increased R&D from the manufacturers' sides to make their vehicles more efficient.
 
+```{r include = F, echo = F, message = F, warning=F}
+ggplot(clean_rebate_data_by_quarter, 
+       aes(x = factor(year_quarter),
+           y = cumulative_rebate_amount)) + 
+  geom_bar(stat = "identity") +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
+  ylab("Total Rebates Given to Date") +
+  xlab("Reporting Period") +
+  scale_y_continuous(label = dollar_format()) +
+  ggtitle("Cumulative Rebates")
+```
+
+SUPPRESSING OUTPUT BUT KEEPING CUMULATIVE REBATES CODE TO TRY TO FIGURE OUT LINE OVERLAY
 
 It is clear that the rebate program is working - it has proven that it incentives New Yorkers to buy electric vehicles and thus reduces CO$_2$ emissions. The participants in the program have consistently exceeded the goals and the CO$_2$ emission reductions are higher than expected. However, this program wont last forever. The budget for the rebate program is currently set at 60 million dollars. With the growing popularity of the program, we are rapidly running through that budget. New York has already used ~53 million dollars of the rebate budget. If this trend continues the program, and it's positive benefits, will likely come to a halt.
 ```{r echo = F, message = F, warning=F}

@@ -4,9 +4,9 @@ To begin, much of our key electric vehicle data was formatted with inconvenient 
 
 Next, we reshape our recycling data to be grouped by borough, using the median zone rates to represent the typical for each borough. We also create a second month variable for ease of access.
 
-Further, the key dataset used for NYC building energy usage was missing important data. Specifically, not all observations had the borough field populated, and it had nothing on 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping dataset and the land-use dataset in order to access the desired information.
+Further, the key dataset used for NYC building energy usage was missing important data. Specifically, not all observations had the borough field populated, and it had nothing on 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping dataset and the land-use dataset in order to access the desired information. We also use an equation (discussed in results) to create a new variable for potential GHG emission reductions.
 
-In addition, the greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data further by grouping by borough and zip code and taking both the mean and median GHG emissions for each. As previously noted, a single negative value for GHG emissions was found. It is filtered out here.
+In addition, the greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data further by grouping by borough and zip code and taking both the mean and median GHG emissions for each, as well as mean potential emission reductions. As previously noted, a single negative value for GHG emissions was found. It is filtered out here.
 
 ```{r include = FALSE}
 library(tidyverse)
@@ -92,9 +92,11 @@ df_build_energy = filter(df_build_energy, ghg >= 0)
 
 df_build_energy$borough = df_build_energy$borough.y
 
+df_build_energy$potential_reductions = (917000/113022000) *(55/67) *(2/3) * df_build_energy$building_area
+
 df_ghg <- df_build_energy %>% 
   group_by(borough, zip) %>% 
-  summarise(avg_ghg = mean(ghg), median_ghg = median(ghg))
+  summarise(avg_ghg = mean(ghg), median_ghg = median(ghg), avg_reductions = mean(potential_reductions))
 
 df_ghg$place <- paste(df_ghg$borough, df_ghg$zip, sep = " - ")
 ```

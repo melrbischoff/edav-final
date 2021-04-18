@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Data transformation | TITLE</title>
-  <meta name="description" content="Chapter 4 Data transformation | TITLE" />
+  <title>Chapter 3 Data transformation | TITLE</title>
+  <meta name="description" content="Chapter 3 Data transformation | TITLE" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Data transformation | TITLE" />
+  <meta property="og:title" content="Chapter 3 Data transformation | TITLE" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Data transformation | TITLE" />
+  <meta name="twitter:title" content="Chapter 3 Data transformation | TITLE" />
   
   
   
@@ -31,8 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="other-data-sources.html"/>
+<link rel="prev" href="data-sources.html"/>
 <link rel="next" href="missing-values.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +51,6 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 
@@ -71,16 +71,18 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
-<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#data-ny-gov"><i class="fa fa-check"></i><b>2.2</b> Data NY Gov</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#ny-gov-data"><i class="fa fa-check"></i><b>2.2</b> NY Gov Data</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#nyserda-data"><i class="fa fa-check"></i><b>2.3</b> NYSERDA Data</a></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#other-data-sources"><i class="fa fa-check"></i><b>2.4</b> Other Data Sources</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="other-data-sources.html"><a href="other-data-sources.html"><i class="fa fa-check"></i><b>3</b> 3.3 Other Data Sources</a></li>
-<li class="chapter" data-level="4" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>4</b> Data transformation</a></li>
-<li class="chapter" data-level="5" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>5</b> Missing values</a></li>
-<li class="chapter" data-level="6" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>6</b> Results</a></li>
-<li class="chapter" data-level="7" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>7</b> Interactive component</a></li>
-<li class="chapter" data-level="8" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>8</b> Conclusion</a></li>
+<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
+<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -100,12 +102,12 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-transformation" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> Data transformation</h1>
-<p>To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. In addition, we formatted date data and made use of a combination of piping and grouping to get counts for rebates.</p>
+<div id="data-transformation" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
+<p>To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. We also formatted date data and made use of a combination of piping and grouping to get counts for rebates. In order to analyze the data over time, we aggregated it by quarter of the year.</p>
 <p>Next, we reshape our recycling data to be grouped by borough, using the median zone rates to represent the typical for each borough. We also create a second month variable for ease of access.</p>
-<p>Further, the key dataset used for NYC building energy usage was missing key data. Specifically, not all observations had the borough field populated, and it had nothing on the previously mentioned 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping (df_zips, trimmed to be only zip and borough) and land-use datasets (df_area_full) in order to access this desired information:</p>
-<p>In addition, the key greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data for further by grouping by borough and zip code and taking both the mean and median GHG emissions for each. As previously noted, a singul negative value for GHG emissions was found. It is filtered out here, as well.</p>
+<p>Further, the key dataset used for NYC building energy usage was missing important data. Specifically, not all observations had the borough field populated, and it had nothing on 2D square footage. As such, the first step in our data transformation was merging the dataset with the zip-boroughs mapping dataset and the land-use dataset in order to access the desired information. We also use an equation (discussed in results) to create a new variable for potential GHG emission reductions.</p>
+<p>In addition, the greenhouse gas (ghg) field had to be converted to a numeric for manipulation and interpretation. After this, we reshaped the data further by grouping by borough and zip code and taking both the mean and median GHG emissions for each, as well as mean potential emission reductions. As previously noted, a single negative value for GHG emissions was found. It is filtered out here.</p>
 
 </div>
             </section>
@@ -113,7 +115,7 @@
           </div>
         </div>
       </div>
-<a href="other-data-sources.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-sources.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="missing-values.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
