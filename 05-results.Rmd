@@ -25,9 +25,6 @@ While recycling stood out as an easy entrance point to understanding New York's 
 We begin by considering the largest sources of GHG in New York State over time:
 
 ```{r echo = F, message = F, warning=F}
-library("tidyverse")
-library(ggplot2)
-
 emissions_from_fuel_data_df <- emissions_from_fuel_data %>%
   select(year, residential_total, commercial_total, industrial_total,
          transportation_total, electric_generation_total,
@@ -37,12 +34,14 @@ emissions_from_fuel_data_df <- emissions_from_fuel_data %>%
 ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) + 
   geom_line(aes(color = variable)) +
   geom_point(size = 1, color = "darkgray") +
-  scale_color_manual(values=c("grey", "grey", "grey", "grey", "grey", "red")) +
-  scale_color_discrete(name = "GHG Source", labels = c("Commercial", "Electric Generation", "Industrial","Net Imports of Electricity", "Residential", "Transportation")) +
-ggtitle("New York State GHG Emissions by Source") +
+  scale_fill_brewer(name = "GHG Source", 
+                       labels = c("Commercial", "Electric Generation", 
+                                  "Industrial","Net Imports of Electricity", 
+                                  "Residential", "Transportation"),
+                    palette = "Paired") +
+  ggtitle("New York State GHG Emissions by Source") +
   xlab("Year") +
-  ylab("Million Metric Tons of GHG") +
-  scale_x_continuous(breaks = round(seq(min(dat$x), max(dat$x), by = 0.5),1)) +
+  ylab("Million Metric Tons of GHG")
 ```
 
 
@@ -51,13 +50,14 @@ The elevated levels of emissions caused by transportation immediately jump out. 
 Interestingly, this pattern does not fully hold when considering just New York City, as stationary fuel burners represent a larger problem here:
 
 ```{r fig.width=10, echo = F, message = F, warning=F}
-ggplot(fuel_emission_factors_data, aes(x=source, y=co2e_kg_unit__fossil_, fill=sector)) +
+ggplot(fuel_emission_factors_data, aes(x=source, y=co2e_kg_unit__fossil_)) +
   geom_bar(stat="identity") +
-  scale_fill_discrete(name = "GHG Source", labels = c("#2 Fuel Oil (Buildings)", "#2 Fuel Oil (Industrial)", "#4 Fuel Oil (Buildings)","#4 Fuel Oil (Industrial)", "#6 Fuel Oil (Buildings)", "#6 Fuel Oil (Industrial)", "Aviation Gasoline", "Biodiesel - Heavy Duty Trucks", "Biodiesel - Biogenic Carbon", "CNG - Buses", "Diesel - Bus", "Diesel - Heavy Duty Vehicles", "Diesel - Light Trucks", "Diesel - Marine (In Port)", "Diessel - Rail Locomotive", "Diesel Passenger Cars", "Ethanol (E100) - Passenger Car", "Gasoline - Light Trucks", "Gasoline - Passenger Cars", "Jet Fuel", "Kerosene", "Natural Gas (Buildings)","Natural Gas - Industrial", "Propane")) +
+  scale_fill_brewer(name = "GHG Source",
+                    # labels = c("#2 Fuel Oil (Buildings)", "#2 Fuel Oil (Industrial)", "#4 Fuel Oil (Buildings)","#4 Fuel Oil (Industrial)", "#6 Fuel Oil (Buildings)", "#6 Fuel Oil (Industrial)", "Aviation Gasoline", "Biodiesel - Heavy Duty Trucks", "Biodiesel - Biogenic Carbon", "CNG - Buses", "Diesel - Bus", "Diesel - Heavy Duty Vehicles", "Diesel - Light Trucks", "Diesel - Marine (In Port)", "Diessel - Rail Locomotive", "Diesel Passenger Cars", "Ethanol (E100) - Passenger Car", "Gasoline - Light Trucks", "Gasoline - Passenger Cars", "Jet Fuel", "Kerosene", "Natural Gas (Buildings)","Natural Gas - Industrial", "Propane"),
+                    palette = "Paired") +
 ggtitle("New York State GHG Emissions by Source") +
   xlab("Source") +
-  ylab("IDK What These Are LOL") +
-  theme_grey(16)
+  ylab("IDK What These Are LOL")
 ```
 
 Here, it is important to note two crucial limitations of our data. Firstly, the data set for NYC emissions only represents 1 year - 2016. It is possible that we were unlucky, and this is an outlier. Secondly, NYC Open Data does provide methodology for measurement. This is quite important for this particular question. New York is a city with many commuters, and it is unclear if emissions from cars driven by people who do not live in the city but work in it are included. 
@@ -72,7 +72,7 @@ ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
   xlab("Metric Tons of GHG Emissions per Building") +
   ylab("Borough - Zip Code") +
   scale_x_continuous(label = comma) +
-  ggtitle("GHG Emissions per Building by Zip Code")
+  ggtitle("GHG Emissions per Building by Zip Code") +
   theme_grey(16) 
 ```
 
@@ -90,7 +90,7 @@ ggplot(filter(df_build_energy, ghg <= 2952),
   theme_ridges() +
   theme(legend.position = "none") +
   scale_x_continuous(label = comma, breaks = seq(from = 0, to = 2952, by = 295)) +
-  ggtitle("GHG Emissions Distributions by Building")+
+  ggtitle("GHG Emissions Distributions by Building Type")+
   xlab("Metric Tons of Green House Gas Emissions") +
   ylab("Building Type") +
   theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
@@ -156,23 +156,6 @@ This is equivalent to 2,747,681, or 8.8% of our total building emissions. This i
 
 
 We first consider the building types that could see the biggest differences made (we remove outliers for ease of visibility): 
-
-```{r fig.height=20, fig.width=15, echo=FALSE, message = F, warning=F}
-ggplot(filter(df_build_energy, building_area %in% 0:250000), 
-       aes(x = potential_reductions,
-           y = reorder(primary_property_type__self_selected, potential_reductions, mean),
-           group = primary_property_type__self_selected,
-           fill = primary_property_type__self_selected)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  theme(legend.position = "none") +
-  scale_x_continuous(label = comma)+#, breaks = seq(from = 0, to = 2952, by = 295)) +
-  ggtitle("Potential GHG Reduction Distributions by Building")+
-  xlab("Potential Reductions (Metric Tons)") +
-  ylab("Building Type") +
-  theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
-```
-
 In order to zoom in on the concrete potential difference we could see, we revisit the previously considered cleveland dot plot, now viewing current GHG emissions per building versus potential new averages. 
 
 ```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}
@@ -184,7 +167,6 @@ ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg), colour = "Avera
   scale_x_continuous(label = comma) +
   scale_colour_discrete(name = "Statistic") +
   ggtitle("Current GHG Emissions per Building vs. Potential New Average by Zip Code")
-  theme_grey(16) 
 ```
 
 While there does not seem to be one area that would particularly affected, every zip code consistently mild to proportionally large gains. Also of interest when considering the mild gains is the implied difference between 2D and 3D square footage. That is, we have previously established the correlation between 3D square footage and GHG emissions, while some of the proportionally smaller reductions in GHG emissions would suggest that 2D square footage is not as correlated with GHG emissions. This is likely a reflection of the fact that New York tends to build buildings upward, rather than out, and each square foot requires energy regardless of direction.
@@ -194,7 +176,6 @@ Given the importance of transportation emissions statewide, and the decrease in 
 A plan currently in place in New York to encourage citizens to buy electric cars is the Drive Clean Rebate program. The rebate program offers up to a 2,000 dollar point of sale rebate for the purchase of a qualifying electric vehicle. The state tracks the program's progress by collecting data such as participants acquisition, participant acquisition goals, CO$_2$ emission reductions and CO$_2$ emission reduction goals. We compare these goals to the performance of the program below. Here, a participant is one who buys an electric car and receives a rebate for it.
 ```{r echo = F, message = F, warning=F}
 # rebates started in 2017
-#clean_rebate_data_by_quarter$variable = "cash"
 energy_program_participants = energy_programs_data %>% 
   filter(year > 2016 & year < 2021 
          & program_name == 'Electric Vehicles - Rebate'
@@ -234,13 +215,13 @@ participants_diff = merge(x = participants,
                           by = "reporting_period", 
                           all.x = TRUE)
 
-ggplot() + 
-  geom_bar(energy_program_participants, 
-       mapping = aes(x = reporting_period,
+ggplot(participants,
+       aes(x = reporting_period,
            y = value,
-           fill = variable),stat = "identity",position="dodge") +
-  # geom_line(data = clean_rebate_data_by_quarter, mapping = aes(x = factor(year_quarter),
-  #          y = cumulative_rebate_amount),  group = 1)+
+           fill = variable)) +
+  geom_bar(stat = "identity",position="dodge") +
+  # geom_line(data = clean_rebate_data_by_quarter, aes(x = factor(year_quarter),
+  #          y = cumulative_rebate_amount), color = "green")+
   theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
   scale_fill_discrete(labels = c(#cash = "Total Rebates Received",
     direct_participants_counts_acquired_to_date="Participants Acquired",
@@ -249,21 +230,6 @@ ggplot() +
   scale_y_continuous(label = comma)+#, sec.axis = sec_axis(~.*10, name = "Total Rebate Amount", label = dollar_format())) +
   ylab("Electric Vehicles Sold with Rebate to Date") +
   xlab("Reporting Period")
-# ggplot(energy_program_participants, 
-#        aes(x = reporting_period,
-#            y = value,
-#            fill = variable)) + 
-#   geom_bar(stat = "identity",position="dodge") +
-#   # geom_line(data = clean_rebate_data_by_quarter, aes(x = factor(year_quarter),
-#   #          y = cumulative_rebate_amount), color = "green")+
-#   theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-#   scale_fill_discrete(labels = c(#cash = "Total Rebates Received",
-#     direct_participants_counts_acquired_to_date="Participants Acquired",
-#     direct_participants_counts_commitments_planned_to_date="Participants Planned"))+
-#   ggtitle("EV Cumulative Sales - Planned vs. Actual") +
-#   scale_y_continuous(label = comma)+#, sec.axis = sec_axis(~.*10, name = "Total Rebate Amount", label = dollar_format())) +
-#   ylab("Electric Vehicles Sold with Rebate to Date") +
-#   xlab("Reporting Period")
 ```
 Since the beginning of the electric vehicle rebate program in New York, we see slow and steady adoption. Beginning in late 2018, the number of vehicles purchased via the rebate has consistently outperformed expectations. The overflow amount of participants acquired still receive the rebate; however, this suggests that we will run out of budget faster than expected. We also conclude from this graph that rebate is a strong incentive for New York residents to buy  an electric car.
 
@@ -296,23 +262,12 @@ ggplot(energy_programs_data_df,
 
 Similarly to the rebate participants, since late 2018 emissions reductions have exceeded planned reductions. Additionally, reductions appear to exceed planned reductions by a larger margin than rebate participation. This suggests that, while access to the rebate may be a motivating factor, a desire the lowest emission vehicles available may be as well. This can also be due to increased R&D from the manufacturers' sides to make their vehicles more efficient.
 
-```{r include = F, echo = F, message = F, warning=F}
-ggplot(clean_rebate_data_by_quarter, 
-       aes(x = factor(year_quarter),
-           y = cumulative_rebate_amount)) + 
-  geom_bar(stat = "identity") +
-  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-  ylab("Total Rebates Given to Date") +
-  xlab("Reporting Period") +
-  scale_y_continuous(label = dollar_format()) +
-  ggtitle("Cumulative Rebates")
-```
-
 SUPPRESSING OUTPUT BUT KEEPING CUMULATIVE REBATES CODE TO TRY TO FIGURE OUT LINE OVERLAY
 
 It is clear that the rebate program is working - it has proven that it incentives New Yorkers to buy electric vehicles and thus reduces CO$_2$ emissions. The participants in the program have consistently exceeded the goals and the CO$_2$ emission reductions are much higher than expected. However, this program wont last forever. The budget for the rebate program is currently set at 60 million dollars. With the growing popularity of the program, NY is rapidly running through that budget. New York has already used ~53 million dollars of the rebate budget. If this trend continues, the program and it's positive benefits, will likely come to a halt in the next year or so.
 
-To analyze when the budget will rum out if EV purchases continue at this rate, we perform a linear regression on the model. The data is complete up to 2021 Q1, so we consider quarters after that to be in the future.
+To analyze when the budget will run out if EV purchases continue at this rate, we perform a linear regression on the data. The data is complete up to 2021 Q1, so we consider quarters after that to be in the future.
+
 ```{r echo = F, message = F, warning=F}
 clean_rebate_regression_data = select(clean_rebate_data_by_quarter,
                                       cumulative_rebate_amount, 
@@ -348,7 +303,7 @@ ggplot(plot_reg,
             aes(x = factor(year_quarter),
                 y = cumulative_rebate_amount,
                 label=comma(cumulative_rebate_amount)),
-            color="red",
+            color="black",
             size=4.5,
             angle = -90,
             hjust = -1.6, 
@@ -356,29 +311,28 @@ ggplot(plot_reg,
   geom_text(data=subset(clean_rebate_data_by_quarter,
                         year_quarter == '2021 Q1'),
             label='current use: $',
-            color="red",
+            color="black",
             angle = -90,
             size=4.5,
             hjust = -.3) +
-  geom_smooth(data=filter(plot_reg, year_quarter > "2017 Q2"),
+  geom_smooth(data=plot_reg,
               aes(x = factor(year_quarter),
                   y = cumulative_rebate_amount,
-                  colour="purple",
-                  group=1),
-              method = "lm", se= FALSE, color = "darkgreen", size = .5) +
-  geom_hline(mapping=aes(yintercept=60000000, colour="Current Budget"), linetype="dashed") +
-  geom_point(aes(x="2021 Q4", y=60000000),
-             colour="red",
-             shape=18,
-             size=3) +  
+                  group=1,
+                  color = "Regression Line"),
+              method = "lm",
+              se= FALSE,
+              size = .5) +
+  geom_hline(mapping=aes(yintercept=60000000, colour="Current Budget")) +
   theme(axis.text.x = element_text(angle = 90)) +
   ylab("Rebate Amount") +
   xlab("Reporting Period") +
   ggtitle("Cumulative Rebate Budget Use Over Time")  + 
   scale_y_continuous(label = dollar_format(),
                      breaks = seq(0,80000000,by = 5000000)) +
-  scale_colour_manual(name="", 
-                      values = c("Current Budget" = "darkgreen")) +
-  scale_fill_brewer(name = "Data", palette = "Paired") 
+  scale_colour_manual(name="lines", 
+                      values = c("Current Budget" = "red",
+                                 "Regression Line" = "darkred")) +
+  scale_fill_brewer(name = "data", palette = "Paired") 
 ```
-Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 denoted by the red point. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
+We see that the program will run out of its current budget between 2021 Q4 and 2022 Q4, where the regression line intersects with the budget line. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.

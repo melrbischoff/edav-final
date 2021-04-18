@@ -1,3 +1,3 @@
 # Interactive component
 
-Given the incredible impacts of the NYS EV Rebate program, such as the increasing amount of EVs rather than traditional gas vehicles on the road and the resulting reduction of CO$_2$ emissions, we believe NYS should increase the budget allocated to this program. We created an interactive chart that will predict when the budget will run out given a specific budget [here](https://vizhub.com/melrbischoff/84c589ec973a41ea911a11ab2bf45bb7). 
+Given the substantial positive impacts of the NYS EV Rebate program, such as the increasing amount of EVs rather than traditional gas vehicles on the road and the resulting reduction of CO$_2$ emissions, we believe NYS should increase the budget allocated to this program. We created an interactive chart that will predict when the budget will run out given a specific budget [here](https://vizhub.com/melrbischoff/84c589ec973a41ea911a11ab2bf45bb7).
