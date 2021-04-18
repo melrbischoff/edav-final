@@ -96,7 +96,7 @@ ggplot(filter(df_build_energy, ghg <= 2952),
   theme_ridges() +
   theme(legend.position = "none") +
   scale_x_continuous(label = comma, breaks = seq(from = 0, to = 2952, by = 295)) +
-  ggtitle("GHG Emissions Distributions by Building Type")+
+  ggtitle("GHG Emissions Distributions by Building Type", subtitle = "Ordered by Mean Emissions")+
   xlab("Metric Tons of Green House Gas Emissions") +
   ylab("Building Type") +
   theme(axis.text.x = element_text(angle = 45,  hjust=1)) 
@@ -115,7 +115,7 @@ ggplot(filter(df_build_energy, ghg %in% 0:2952
               & building_area < 1000000 
               & dof_gross_floor_area_ft_ < 1000000),
        aes(x = dof_gross_floor_area_ft_, y = ghg)) +
-  geom_point() +
+  geom_point(aes(alpha = 0.5)) +
   xlab("Total Square Footage") +
   ylab("Metric Tons of GHG Emissions") +
   scale_y_continuous(label = comma) +
@@ -161,7 +161,7 @@ This is equivalent to 2,747,681, or 8.8% of our total building emissions. This i
 
 
 
-We first consider the building types that could see the biggest differences made (we remove outliers for ease of visibility): 
+
 In order to zoom in on the concrete potential difference we could see, we revisit the previously considered cleveland dot plot, now viewing current GHG emissions per building versus potential new averages. 
 
 ```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}

@@ -33,6 +33,7 @@
   
 <link rel="prev" href="data-sources.html"/>
 <link rel="next" href="missing-values.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +51,6 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 
@@ -71,7 +71,8 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
 <li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#ny-gov-data"><i class="fa fa-check"></i><b>2.2</b> NY Gov Data</a></li>
 <li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#nyserda-data"><i class="fa fa-check"></i><b>2.3</b> NYSERDA Data</a></li>
@@ -101,7 +102,7 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-transformation" class="section level1">
+<div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
 <p>To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. We also formatted date data and made use of a combination of piping and grouping to get counts for rebates. In order to analyze the data over time, we aggregated it by quarter of the year.</p>
 <p>Next, we reshape our recycling data to be grouped by borough, using the median zone rates to represent the typical for each borough. We also create a second month variable for ease of access.</p>
