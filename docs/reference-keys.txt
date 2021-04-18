@@ -7,5 +7,7 @@ other-data-sources
 data-transformation
 missing-values
 results
+where-new-york-stands-now
+potential-improvements
 interactive-component
 conclusion
