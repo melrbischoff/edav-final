@@ -2,7 +2,7 @@
 
 First, there are many observations in the recycling dataset with the month field not populated. As the problem appears about the occur uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.
 
-As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously.
+As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously, we map to a dataset on zipcode to fill the missing boroughs.
 
 ```{r echo=FALSE}
 ggplot(df_build_energy_source, aes(Borough)) +
@@ -10,7 +10,6 @@ ggplot(df_build_energy_source, aes(Borough)) +
   ggtitle("Most Observations Have No Borough Documented") +
   ylab("Observations") + 
   scale_y_continuous(label = comma)
-
-#sum(is.na(energy_efficiency_project_data$*CO2 col*))
-#^^THIS MAKES MARKDOWN BARF
 ```
+
+The EV data is very well documented. There are no missing values that we feel the need to impute. We add in predictions for future values in the dataset for analysis in the results section.

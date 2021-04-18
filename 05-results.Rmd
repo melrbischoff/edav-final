@@ -310,7 +310,9 @@ ggplot(clean_rebate_data_by_quarter,
 
 SUPPRESSING OUTPUT BUT KEEPING CUMULATIVE REBATES CODE TO TRY TO FIGURE OUT LINE OVERLAY
 
-It is clear that the rebate program is working - it has proven that it incentives New Yorkers to buy electric vehicles and thus reduces CO$_2$ emissions. The participants in the program have consistently exceeded the goals and the CO$_2$ emission reductions are higher than expected. However, this program wont last forever. The budget for the rebate program is currently set at 60 million dollars. With the growing popularity of the program, we are rapidly running through that budget. New York has already used ~53 million dollars of the rebate budget. If this trend continues the program, and it's positive benefits, will likely come to a halt.
+It is clear that the rebate program is working - it has proven that it incentives New Yorkers to buy electric vehicles and thus reduces CO$_2$ emissions. The participants in the program have consistently exceeded the goals and the CO$_2$ emission reductions are much higher than expected. However, this program wont last forever. The budget for the rebate program is currently set at 60 million dollars. With the growing popularity of the program, NY is rapidly running through that budget. New York has already used ~53 million dollars of the rebate budget. If this trend continues, the program and it's positive benefits, will likely come to a halt in the next year or so.
+
+To analyze when the budget will rum out if EV purchases continue at this rate, we perform a linear regression on the model. The data is complete up to 2021 Q1, so we consider quarters after that to be in the future.
 ```{r echo = F, message = F, warning=F}
 clean_rebate_regression_data = select(clean_rebate_data_by_quarter,
                                       cumulative_rebate_amount, 
@@ -330,40 +332,53 @@ fill_in_quarters <- as.yearqtr(seq.Date(from=start, to = end, by="quarter"), for
 dollar_estimate$year_quarter = fill_in_quarters
 final_reg <- rbind(clean_rebate_regression_data, dollar_estimate)
 
-ggplot(filter(final_reg, year_quarter<"2021 Q2"), 
+final_reg$curr_fut[final_reg$year_quarter<= as.yearqtr("2021 Q1")]  <- "Reported Data"
+final_reg$curr_fut[final_reg$year_quarter > as.yearqtr("2021 Q1")]  <- "Predicted Data"
+
+plot_reg = filter(final_reg, year_quarter<="2022 Q1")
+plot_reg$budget = as.integer(60000000)
+
+ggplot(plot_reg, 
        aes(x = factor(year_quarter),
            y = cumulative_rebate_amount)) + 
-  geom_bar(stat = "identity") +
-  theme(legend.title = element_blank(),
-        axis.text.x = element_text(angle = 90)) +
-  ylab("Rebate Amount") +
-  xlab("Reporting Period") +
-  scale_y_continuous(label = dollar_format(),
-                     breaks = seq(0,80000000,by = 5000000)) +
-  ggtitle("Cumulative Rebate Budget Use Over Time")  + 
+  geom_bar(aes(fill = as.factor(curr_fut)),
+           stat = "identity") +
   geom_text(data=subset(clean_rebate_data_by_quarter,
                         year_quarter == '2021 Q1'),
             aes(x = factor(year_quarter),
                 y = cumulative_rebate_amount,
                 label=comma(cumulative_rebate_amount)),
             color="red",
-            size=4,
+            size=4.5,
             angle = -90,
-            hjust = -.6, 
+            hjust = -1.6, 
             vjust = .5) +
   geom_text(data=subset(clean_rebate_data_by_quarter,
                         year_quarter == '2021 Q1'),
-            label='$',
+            label='current use: $',
             color="red",
             angle = -90,
-            hjust = -4) +
-  geom_smooth(data=filter(final_reg,
-                          year_quarter< "2021 Q2" 
-                          & year_quarter > "2017 Q2"),
+            size=4.5,
+            hjust = -.3) +
+  geom_smooth(data=filter(plot_reg, year_quarter > "2017 Q2"),
               aes(x = factor(year_quarter),
                   y = cumulative_rebate_amount,
+                  colour="purple",
                   group=1),
-              method = "lm", se= FALSE, color = "blue", size = .5)
+              method = "lm", se= FALSE, color = "darkgreen", size = .5) +
+  geom_hline(mapping=aes(yintercept=60000000, colour="Current Budget"), linetype="dashed") +
+  geom_point(aes(x="2021 Q4", y=60000000),
+             colour="red",
+             shape=18,
+             size=3) +  
+  theme(axis.text.x = element_text(angle = 90)) +
+  ylab("Rebate Amount") +
+  xlab("Reporting Period") +
+  ggtitle("Cumulative Rebate Budget Use Over Time")  + 
+  scale_y_continuous(label = dollar_format(),
+                     breaks = seq(0,80000000,by = 5000000)) +
+  scale_colour_manual(name="", 
+                      values = c("Current Budget" = "darkgreen")) +
+  scale_fill_brewer(name = "Data", palette = "Paired") 
 ```
-Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 (at the intersection of the red line):
-This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
+Fitting a regression line to the predict rebate usage moving forward, we see that the program will run out between 2021 Q4 and 2022 Q4 denoted by the red point. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.

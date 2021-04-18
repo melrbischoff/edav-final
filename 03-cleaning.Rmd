@@ -15,6 +15,7 @@ library(zoo)
 library(lubridate)
 library(ggplot2)
 library(latex2exp)
+library(RColorBrewer)
 
 # from EV-Registration-Tables.xlsx
 ev_zip_code_data = ev_registration_tables_sheets$`Current by ZIP Code`
