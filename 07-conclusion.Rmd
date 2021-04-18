@@ -1,6 +1,6 @@
 # Conclusion
 
-While we have tried to point out problem areas and potential solutions regarding New York's sustainability, we should again acknowledge limitations of our analyses. Much of it is based on estimation, and we are often reliant on datasets pulled from only one year. While we have attempted to qualify any conclusions from limited data as preliminary throughout, we do so again here.
+While we have tried to point out problem areas and potential solutions regarding New York's sustainability, we should again acknowledge limitations of our analyses. Much of them is based on estimation, and we are often reliant on datasets pulled from only one year. While we have attempted to qualify any conclusions from limited data as preliminary throughout, we do so again here.
 
 For future analyses, a closer exploration of processes (if possible) stands out as particularly interesting. Adding solar panels to rooftops could help to reduce building emissions, but there are myriad other ways that these emissions could be reduced through optimized building operations. Electric vehicle use has seen growth, but a deeper analysis of many different rebate programs could reveal more efficient ways to get more on the road. There are many similar explorations that could prove fruitful.
 
@@ -8,4 +8,4 @@ When considering all analyses of New York's current sustainability that we did c
 
 However, it is equally difficult to say that New York is doing the best that it could. Statewide electric vehicle usage appears to be hampered by rebate ceilings and could feasibly slow soon. It is also important to note that while growth has been steady, it has also been slow - only 20,000 EVs have been purchased through the rebate program to date. Further, New York City is leaving simple emissions reductions on the table. Rooftop solar potential could help to reduce building emissions by nearly 10%, and yet there have been [fewer than 28,000 completed solar projects](https://nysolarmap.com/) in a city with over 800,000 documented buildings. Finally, it is not hard to call New York City a recycling disaster. It is fairly reasonable to say that the city should aim to double its current diversion rate.
 
-On the whole, New York finds itself in a situation that is likely far from unique: doing enough regarding sustainability to claim progress, but still with much work left than completed. 
+On the whole, New York finds itself in a situation that is likely far from unique: doing enough regarding sustainability to claim progress, but still with much more work left than completed. 
