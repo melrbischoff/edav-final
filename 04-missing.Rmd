@@ -12,4 +12,5 @@ ggplot(df_build_energy_source, aes(Borough)) +
   scale_y_continuous(label = comma)
 ```
 
+
 The EV data is very well documented. There are no missing values that we feel the need to impute. We add in predictions for future values in the dataset for analysis in the results section.

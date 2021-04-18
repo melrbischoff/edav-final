@@ -73,7 +73,7 @@ Still, caveats aside, the dip in the importance of transportation (statewide, tr
 
 On the other hand, the plot also demonstrates the clear importance of buildings when considering the city's GHG emissions, warranting a closer look at building emissions in the city. As a first step, we consider the locations of our worst emitters:
 
-```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}
+```{r fig.height = 31,fig.width=10,  echo=FALSE, message = FALSE, warning=FALSE}
 ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
   geom_point() +
   xlab("Metric Tons of GHG Emissions per Building") +
