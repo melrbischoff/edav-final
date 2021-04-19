@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Data transformation | TITLE</title>
-  <meta name="description" content="Chapter 3 Data transformation | TITLE" />
+  <title>Chapter 3 Data transformation | The City that Never Recycles</title>
+  <meta name="description" content="Chapter 3 Data transformation | The City that Never Recycles" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Data transformation | TITLE" />
+  <meta property="og:title" content="Chapter 3 Data transformation | The City that Never Recycles" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Data transformation | TITLE" />
+  <meta name="twitter:title" content="Chapter 3 Data transformation | The City that Never Recycles" />
   
   
   
@@ -24,7 +24,7 @@
 <meta name="author" content="Melissa Bischoff &amp; George Reynolds" />
 
 
-<meta name="date" content="2021-04-18" />
+<meta name="date" content="2021-04-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,6 @@
   
 <link rel="prev" href="data-sources.html"/>
 <link rel="next" href="missing-values.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -51,6 +50,7 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 
@@ -67,12 +67,11 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">SHORT TITLE HERE</a></li>
+<li><a href="./">A Look at NY Sustainability</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
-<ul>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
 <li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#ny-gov-data"><i class="fa fa-check"></i><b>2.2</b> NY Gov Data</a></li>
 <li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#nyserda-data"><i class="fa fa-check"></i><b>2.3</b> NYSERDA Data</a></li>
@@ -80,8 +79,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
-<ul>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a><ul>
 <li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#where-new-york-stands-now"><i class="fa fa-check"></i><b>5.1</b> Where New York Stands Now</a></li>
 <li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#potential-improvements"><i class="fa fa-check"></i><b>5.2</b> Potential Improvements</a></li>
 </ul></li>
@@ -98,7 +96,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">TITLE</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The City that Never Recycles</a>
           </h1>
         </div>
 
@@ -106,7 +104,7 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-transformation" class="section level1" number="3">
+<div id="data-transformation" class="section level1">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
 <p>To begin, much of our key electric vehicle data was formatted with inconvenient variable names, so we made use of a custom function to reformat them into more usable forms. We also formatted date data and made use of a combination of piping and grouping to get counts for rebates. In order to analyze the data over time, we aggregated it by quarter of the year.</p>
 <p>Next, we reshape our recycling data to be grouped by borough, using the median zone rates to represent the typical for each borough. We also create a second month variable for ease of access.</p>
