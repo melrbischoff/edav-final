@@ -7,12 +7,13 @@ We begin our analysis with a basic measure of how much a community cares about t
 ```{r echo = F}
 ggplot(rec_use, aes(x = month, y = diversion_rate, group = zone)) +
   geom_line(aes(color = zone)) +
-  scale_color_colorblind() +
   ggtitle(("New York 2019 Recycling")) +
   xlab("Month") +
   ylab("Typical Overall Diversion Rate - %") +
-  geom_hline(aes(yintercept = 43.2, linetype = "Virginia Diversion Rate"), colour = "blue") +
-  scale_color_discrete(name = "Zone") +
+  geom_hline(aes(yintercept = 43.2,
+                 linetype = "Virginia Diversion Rate"),
+             colour = "blue") +
+  scale_color_brewer(name = "Zone", palette = "Dark2") +
   scale_linetype_manual(name = "Comparison Point", values = c(2, 2), 
                       guide = guide_legend(override.aes = list(color = "blue"))) +
   theme(axis.text.x = element_text(angle = 35, hjust = 1))
@@ -35,15 +36,16 @@ emissions_from_fuel_data_df <- emissions_from_fuel_data %>%
 
 ggplot(emissions_from_fuel_data_df, aes(x = year, y = value)) + 
   geom_line(aes(color = variable)) +
-  geom_point(size = 1, color = "darkgray") +
-  scale_fill_brewer(name = "GHG Source", 
-                       labels = c("Commercial", "Electric Generation", 
-                                  "Industrial","Net Imports of Electricity", 
+  scale_color_brewer(name = "GHG Source", 
+                       labels = c("Commercial", "Electric Generation",
+                                  "Industrial","Net Imports of Electricity",
                                   "Residential", "Transportation"),
-                    palette = "Paired") +
+                    palette = "Dark2") +
   ggtitle("New York State GHG Emissions by Source") +
   xlab("Year") +
-  ylab("Million Metric Tons of GHG")
+  ylab("Million Metric Tons of GHG") +
+  scale_y_continuous(breaks = seq(0, 80, by = 10)) +
+  scale_x_continuous(breaks = seq(1990, 2016, by = 2))
 ```
 
 The elevated levels of emissions caused by transportation immediately jump out. Even when considering buildings as a whole (i.e. commercial, residential, and industrial combined), transportation is still responsible for nearly as many emissions (90% as many). This suggests that cars, trucks, and other motor vehicles are some of the biggest local culprits.
@@ -56,10 +58,11 @@ fuel_emission_factors_agg = fuel_emission_factors_data %>%
   summarize(sum_co2 = sum(co2e_kg_unit__fossil_))
   
 ggplot(fuel_emission_factors_agg, 
-       aes(x=source, y=sum_co2)) +
+       aes(x=source,
+           y=sum_co2)) +
   geom_bar(stat="identity") +
   geom_text(aes(label=round(sum_co2, digits=2)),
-            vjust=-.75,
+            vjust=-.4,
             size = 4) + 
   ggtitle("New York State GHG Emissions by Source") +
   xlab("Source") +
@@ -121,8 +124,8 @@ ggplot(filter(df_build_energy, ghg %in% 0:2952
   ylab("Metric Tons of GHG Emissions") +
   scale_y_continuous(label = comma) +
   scale_x_continuous(label = comma) +
-  theme(legend.position = "none") +
-  ggtitle("Square Footage - GHG Emissions Relationship")
+  theme(legend.title = element_blank(), legend.position = "none") +
+  ggtitle("Square Footage - GHG Emivssions Relationship")
 ```
 
 While some zero values may skew the overall picture, there does appear to be a generally positive correlation between the two. As such, in order to estimate total emissions, we take the sum of all documented GHG emissions and divide it by the the sum of all of the same buildings' 3D square footage - this gives us a metric of GHG emissions per square foot. The calculation gives about 0.0056 metric tons of GHG emissions per square foot.
@@ -135,8 +138,12 @@ emissions_per_person <- c(3.73, 4.95)
 
 df_ghg_comp <- data.frame(city, emissions_per_person)
 
-ggplot(df_ghg_comp, aes(city, emissions_per_person)) +
+ggplot(df_ghg_comp, aes(city,
+                        emissions_per_person)) +
   geom_bar(stat = "identity") +
+  geom_text(aes(label=round(emissions_per_person, digits=2)),
+            vjust=-.4,
+            size = 3) + 
   ylab("Metric Tons of Building GHG Emissions per Person") +
   xlab("City") +
   ggtitle("New York City vs. San Francisco Emission Rates")
@@ -166,14 +173,19 @@ This is equivalent to 2,747,681, or 8.8% of our total building emissions. This i
 In order to zoom in on the concrete potential difference we could see, we revisit the previously considered Cleveland dot plot, now viewing current GHG emissions per building versus potential new averages. 
 
 ```{r fig.height = 31, echo=FALSE, message = FALSE, warning=FALSE}
-ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg), colour = "Average GHG Emissions")) +
+ggplot(df_ghg, aes(x = avg_ghg,
+                   y = fct_reorder(place, avg_ghg),
+                   colour = "Average GHG Emissions")) +
   geom_point() +
-  geom_point(aes(x = avg_ghg - avg_reductions, y = fct_reorder(place, avg_ghg), colour = "Potential New Average"))+
+  geom_point(aes(x = avg_ghg - avg_reductions,
+                 y = fct_reorder(place, avg_ghg),
+                 colour = "Potential New Average")) +
   xlab("Metric Tons of GHG Emissions per Building") +
   ylab("Borough - Zip Code") +
   scale_x_continuous(label = comma) +
   scale_colour_discrete(name = "Statistic") +
   ggtitle("Current GHG Emissions per Building vs. Potential New Average by Zip Code")
+
 ```
 
 While there does not seem to be one area that would particularly affected, every zip code consistently sees mild to proportionally large reductions. Also of interest when considering the mild gains is the implied difference between 2D and 3D square footage. That is, we have previously established the correlation between 3D square footage and GHG emissions, while some of the proportionally smaller reductions in GHG emissions would suggest that 2D square footage is not as correlated with GHG emissions. This is likely a reflection of the fact that New York tends to build buildings upward, rather than out, and each square foot requires energy regardless of direction.
@@ -212,11 +224,15 @@ participant_plot = ggplot(participants,
                               y = value,
                               fill = variable)) +
   geom_bar(stat = "identity",position="dodge") +
-  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-  scale_fill_discrete(labels = c(
+  theme(legend.title = element_blank(),
+        legend.position="bottom",
+        axis.text.x = element_text(angle = 90)) +
+  scale_fill_brewer(labels = c(
     direct_participants_counts_acquired_to_date="Participants Acquired",
-    direct_participants_counts_commitments_planned_to_date="Participant Acquisition Goal")) +
-  ggtitle("EV Cumulative Sales - Planned vs. Goal") +
+    direct_participants_counts_commitments_planned_to_date="Goal Participants"),
+    palette = "Paired") +
+  ggtitle("EV Sales",
+          subtitle = "Planned vs. Goal (Cumulative)") +
   scale_y_continuous(label = comma) +
   ylab("Electric Vehicles Sold with Rebate") +
   xlab("Reporting Period")
@@ -226,14 +242,19 @@ co2_plot = ggplot(energy_programs_data_df,
                       y = value,
                       fill = variable)) + 
   geom_bar(stat = "identity",position="dodge") +
-  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90)) +
-  scale_fill_discrete(labels = c(
+  theme(legend.title = element_blank(),
+        legend.position="bottom",
+        axis.text.x = element_text(angle = 90)) +
+  scale_fill_brewer(labels = c(
     direct_gross_lifetime_co2e_emission_reductions_metric_tons_acquired_to_date="Actual Reductions",
-    direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="Planned Reduction")) +
+    direct_gross_lifetime_co2e_emission_reductions_metric_tons_commitments_planned_to_date="Goal Reductions"),
+    palette = "Paired") +
   xlab("Reporting Period") +
   ylab(TeX("Metric Tons of $\\CO_2$ Reduction to Date")) +
-  ggtitle(TeX("Cumulative Resulting $\\CO_2$ Reductions - Planned vs. Actual"))+
-  scale_y_continuous(label = comma, breaks = seq(0, 600000, by = 50000))
+  ggtitle(TeX("Resulting $\\CO_2$ Reductions"),
+          subtitle = "Planned vs. Actual (Cumulative)")+
+  scale_y_continuous(label = comma, breaks = seq(0, 600000, by = 50000)) +
+  theme(legend.position="bottom")
 
 grid.arrange(participant_plot, co2_plot, ncol=2)
 ```
