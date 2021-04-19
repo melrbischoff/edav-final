@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Data sources | The City that Never Recycles</title>
-  <meta name="description" content="Chapter 2 Data sources | The City that Never Recycles" />
+  <title>Chapter 2 Data sources | New York - The City that Never Recycles</title>
+  <meta name="description" content="Chapter 2 Data sources | New York - The City that Never Recycles" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Data sources | The City that Never Recycles" />
+  <meta property="og:title" content="Chapter 2 Data sources | New York - The City that Never Recycles" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Data sources | The City that Never Recycles" />
+  <meta name="twitter:title" content="Chapter 2 Data sources | New York - The City that Never Recycles" />
   
   
   
@@ -33,6 +33,7 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="data-transformation.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +51,6 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 
@@ -71,7 +71,8 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a><ul>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#nyc-open-data"><i class="fa fa-check"></i><b>2.1</b> NYC Open Data</a></li>
 <li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#ny-gov-data"><i class="fa fa-check"></i><b>2.2</b> NY Gov Data</a></li>
 <li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#nyserda-data"><i class="fa fa-check"></i><b>2.3</b> NYSERDA Data</a></li>
@@ -79,7 +80,8 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a><ul>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#where-new-york-stands-now"><i class="fa fa-check"></i><b>5.1</b> Where New York Stands Now</a></li>
 <li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#potential-improvements"><i class="fa fa-check"></i><b>5.2</b> Potential Improvements</a></li>
 </ul></li>
@@ -96,7 +98,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The City that Never Recycles</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">New York - The City that Never Recycles</a>
           </h1>
         </div>
 
@@ -104,9 +106,9 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-sources" class="section level1">
+<div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
-<div id="nyc-open-data" class="section level2">
+<div id="nyc-open-data" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> NYC Open Data</h2>
 <p>On the city level, our key data source is NYC Open Data - <a href="https://opendata.cityofnewyork.us/">located here</a>. This site offers a library of datasets filled with municipal-government-agency-collected data.</p>
 <p>To begin, we wanted to understand how well NYC recycles, so we turned to a simple <a href="https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz">recycling diversion and capture dataset</a>. The data shows diversion and capture rates (as well as a breakout of the latter) for each zone and district in each borough for each month of 2019. It has approximately 2,800 observations.</p>
@@ -115,18 +117,18 @@ First, we use an <a href="https://data.cityofnewyork.us/Environment/Inventory-of
 <p>The second key dataset for understanding New York City greenhouse gas emissions contains <a href="https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/qb3v-bbre">energy and water disclose data</a> for buildings - specifically, buildings covered by <a href="https://www1.nyc.gov/assets/buildings/local_laws/ll84of2009.pdf">local law 84</a>. The dataset contains variables such as zip code, BBL (a unique property identifier), total square footage, kilowatt hours of electricity consumed and total metric tons of greenhouse gas (GHG) emissions for buildings. The set has approximately 29,000 observations. One immediately apparent issue was the presence of negative GHG emissions for one observation. It seems to be an obvious error and is filtered out. Further issues regarding the data will be discussed in relation to a second dataset, as well as in sections III and IV.</p>
 <p>Also crucial for understanding New York City buildings was a <a href="https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks">primary land use dataset</a>, which also contained BBL and key building measurements for understanding 2D square footage of buildings (i.e. square footage on a single floor). This dataset has over 850,000 observations. This highlights a key shortcoming of the preceding dataset referenced, as it offers only a limited sample of buildings documented. Further, it is far from a random sample, as Local Law 84 covers buildings only reaching specific thresholds of square footage. In order to consider the city as a whole, the energy use dataset has to be used in order to make estimations more widely.</p>
 </div>
-<div id="ny-gov-data" class="section level2">
+<div id="ny-gov-data" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> NY Gov Data</h2>
 <p>On the state level, we rely on the state-level counterpart to Open NYC <a href="https://data.ny.gov/">data.ny.gov</a>. This site offers a similar depth and breadth of datasets available. For our purposes, it was particularly useful for understanding the current state of vehicle usage (e.g. greenhouse gas emissions from cars, how many electric vehicles are in circulation, etc.).</p>
 <p>Firstly, we make use of data on <a href="https://data.ny.gov/Energy-Environment/Greenhouse-Gas-Emissions-From-Fuel-Combustion-Mill/djfn-trk4">greenhouse gas emissions from fuel combustion</a>. This dataset is very similar to the city-level one, with variables representing metric tons of greenhouse gas emissions from sources such as residential, transportation and commercial activity, with the added benefit of a longer time period represented by the year variable. It is also of similar size to the previous set at 27 observations. While this dataset is state-level, it is also crucial for understanding the city-level data we had, as it demonstrates key contrasts between the city and state.</p>
 </div>
-<div id="nyserda-data" class="section level2">
+<div id="nyserda-data" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> NYSERDA Data</h2>
 <p>From here, we relied heavily on <a href="https://www.nyserda.ny.gov/">NYSERDA data</a> - a subset of the entire state’s data library dedicated to understanding energy research and development.</p>
 <p>Of initial interest is a provided dataset on the state’s <a href="https://data.ny.gov/Energy-Environment/NY-Clean-Energy-Dashboard-Programs-Progress-and-Pl/3rux-yyd9">status on clean energy programs</a>. It contains rate-payer funded programs in New York State starting in 2016. We use this dataset to analyze the planned scale and current effectiveness of the state’s electric vehicle rebate program using variables such as participants planned, participants acquired, CO2 emission reductions planned, and CO2 emission reductions acquired. While the set has approximately 23,000 observations of NYS programs, we focus only on the electric vehicles rebate program.</p>
 <p>In concert with the previous dataset, we also used one dedicated solely to <a href="https://data.ny.gov/Energy-Environment/NYSERDA-Electric-Vehicle-Drive-Clean-Rebate-Data-B/thd2-fu8y">the clean rebate program</a>. This dataset has variables such as make, model, rebate amount, and zip code of electric vehicles purchased and registered with the rebate applied. While the previous dataset was crucial for understanding overall program effectiveness, this one gives a more granular view and provides insights into where and how the program is or is not working. It has approximately 37,000 observations.</p>
 </div>
-<div id="other-data-sources" class="section level2">
+<div id="other-data-sources" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Other Data Sources</h2>
 <p>We also used a <a href="https://data.beta.nyc/en/dataset/pediacities-nyc-neighborhoods/resource/7caac650-d082-4aea-9f9b-3681d568e8a5">non-Open-NYC dataset</a> to access its variables for mapping zip codes to boroughs. It has 177 entries.</p>
 
