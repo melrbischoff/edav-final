@@ -75,5 +75,3 @@ In concert with the previous dataset, we also used one dedicated solely to [the 
 
 ## Other Data Sources
 We also used a [non-Open-NYC dataset](https://data.beta.nyc/en/dataset/pediacities-nyc-neighborhoods/resource/7caac650-d082-4aea-9f9b-3681d568e8a5) to access its variables for mapping zip codes to boroughs. It has 177 entries. 
-
-Lastly, while our focus was local, benchmarking is important. As such, we made use of [global electric vehicle data](https://www.iea.org/data-and-statistics/charts/global-electric-car-sales-by-key-markets-2015-2020) from [IEA](https://www.iea.org/) in order to provide insights into how we are pacing in terms of EV use growth. This data has aggregated global electric car sales in key markets from 2010-2020 to analyze market share.
