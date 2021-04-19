@@ -338,4 +338,4 @@ ggplot(plot_reg,
   scale_fill_brewer(name = "Data", palette = "Paired") 
 ```
 
-We see that the program will run out of its current budget between 2021 Q4 and 2022 Q4, where the regression line intersects with the budget line. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
+We see that the program will run out of its current budget between 2021 Q4 and 2022 Q1, where the regression line intersects with the budget line. This suggests that current policy could be holding the state back from a more environmentally friendly endpoint. Perhaps increasing the rebate could make this possible.
