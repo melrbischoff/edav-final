@@ -7,7 +7,7 @@ We begin our analysis with a basic measure of how much a community cares about t
 ```{r echo = F}
 ggplot(rec_use, aes(x = month, y = diversion_rate, group = zone)) +
   geom_line(aes(color = zone)) +
-  ggtitle(("New York 2019 Recycling")) +
+  ggtitle(("New York City 2019 Recycling")) +
   xlab("Month") +
   ylab("Typical Overall Diversion Rate - %") +
   geom_hline(aes(yintercept = 43.2,
@@ -61,7 +61,7 @@ ggplot(fuel_emission_factors_agg,
        aes(x=source,
            y=sum_co2)) +
   geom_bar(stat="identity") +
-  geom_text(aes(label=round(sum_co2, digits=2)),
+  geom_text(aes(label=paste(round(sum_co2, digits=2),"kg/Unit")),
             vjust=-.4,
             size = 4) + 
   ggtitle("New York State GHG Emissions by Source") +
@@ -141,9 +141,9 @@ df_ghg_comp <- data.frame(city, emissions_per_person)
 ggplot(df_ghg_comp, aes(city,
                         emissions_per_person)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=round(emissions_per_person, digits=2)),
+  geom_text(aes(label=paste(round(emissions_per_person, digits=2),"per person")),
             vjust=-.4,
-            size = 3) + 
+            size = 3.5) + 
   ylab("Metric Tons of Building GHG Emissions per Person") +
   xlab("City") +
   ggtitle("New York City vs. San Francisco Emission Rates")
@@ -184,7 +184,9 @@ ggplot(df_ghg, aes(x = avg_ghg,
   ylab("Borough - Zip Code") +
   scale_x_continuous(label = comma) +
   scale_colour_discrete(name = "Statistic") +
-  ggtitle("Current GHG Emissions per Building vs. Potential New Average by Zip Code")
+  ggtitle("Current GHG Emissions per Building vs. Potential New Average",
+          subtitle = "by  Zip Code") +
+  theme(legend.position="top")
 
 ```
 
