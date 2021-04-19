@@ -2,7 +2,7 @@
 
 First, there are many observations in the recycling dataset with the month field not populated. As the problem appears about the occur uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.
 
-As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously: we map to a dataset on zipcode to fill the missing boroughs. While some rows do have other missing data, there is no visible pattern, and we thus simply filter out NAs when necessary.
+As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously: we map to a dataset on zipcode to fill the missing boroughs. 
 
 ```{r echo=FALSE}
 ggplot(df_build_energy_source, aes(Borough)) +
@@ -10,6 +10,16 @@ ggplot(df_build_energy_source, aes(Borough)) +
   ggtitle("Most Observations Have No Borough Documented") +
   ylab("Observations") + 
   scale_y_continuous(label = comma)
+```
+
+
+While some rows do have other missing data, this is quite rare, and we thus simply filter out NAs when necessary. Further, while some patterns are seen, they are expected (e.g. potential reductions are dependent on building area, so if the latter is missing the former must be as well). For the most part, the missing values are also all related to footage, which may reflect differences on reporting for empty lots. Note - only the variables used for the results section are included.
+
+```{r}
+library(extracat)
+
+dbe_used = df_build_energy[c(1, 2, 17, 19, 69, 70, 71, 72, 73)]
+visna(dbe_used)
 ```
 
 
