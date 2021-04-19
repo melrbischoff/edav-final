@@ -88,7 +88,7 @@ ggplot(df_ghg, aes(x = avg_ghg, y = fct_reorder(place, avg_ghg))) +
 
 While the 11370 zip code in Queens stands out as a particularly high emitter, Manhattan appears to be the borough with the most highly damaging buildings.
 
-Of equal value is a better understanding of the types of buildings that are most often responsible for high emissions - shown below. Prior to considering the graph, we note that results here are filtered. Specifically, we considering only buildings with GHG emissions of 2,952 metric tons or fewer. This threshold was landed on after several rounds of graphing made it clear that anything above this threshold skewed the graph in such a way as to make it difficult to read. The buildings kept represent over 96% of all observations. 
+Of equal value is a better understanding of the types of buildings that are most often responsible for high emissions - shown below. Prior to considering the graph, we note that results here are filtered. Specifically, we consider only buildings with GHG emissions of 2,952 metric tons or fewer. This threshold was landed on after several rounds of graphing made it clear that anything above this threshold skewed the graph in such a way as to make it difficult to read. The buildings kept represent over 96% of all observations. 
 
 ```{r fig.height=20, fig.width=15, echo=FALSE, message = F, warning=F}
 ggplot(filter(df_build_energy, ghg <= 2952), 
@@ -190,7 +190,7 @@ ggplot(df_ghg, aes(x = avg_ghg,
 
 ```
 
-While there does not seem to be one area that would particularly affected, every zip code consistently sees mild to proportionally large reductions. Also of interest when considering the mild gains is the implied difference between 2D and 3D square footage. That is, we have previously established the correlation between 3D square footage and GHG emissions, while some of the proportionally smaller reductions in GHG emissions would suggest that 2D square footage is not as correlated with GHG emissions. This is likely a reflection of the fact that New York tends to build buildings upward, rather than out, and each square foot requires energy regardless of direction.
+While there does not seem to be one area that would be particularly affected, every zip code consistently sees mild to proportionally large reductions. Also of interest when considering the mild gains is the implied difference between 2D and 3D square footage. That is, we have previously established the correlation between 3D square footage and GHG emissions, while some of the proportionally smaller reductions in GHG emissions would suggest that 2D square footage is not as correlated with GHG emissions. This is likely a reflection of the fact that New York tends to build buildings upward, rather than out, and each square foot requires energy regardless of direction.
 
 Next, given the importance of transportation emissions statewide, and the decrease in its importance in a less car-dependent area, a consideration of on-road vehicles is also warranted. Specifically, we review electric vehicles.
 
