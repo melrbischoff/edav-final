@@ -108,7 +108,7 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
-<p>First, there are many observations in the recycling dataset with the month field not populated. As the problem appears about the occur uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.</p>
+<p>First, there are many observations in the recycling dataset with the month field not populated. As the problem appears to occur virtually uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.</p>
 <p>As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously: we map to a dataset on zipcode to fill the missing boroughs.</p>
 <p><img src="finalproj_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>While some rows do have other missing data, this is quite rare, and we thus simply filter out NAs when necessary. Further, while some patterns are seen, they are expected (e.g. potential reductions are dependent on building area, so if the latter is missing the former must be as well). For the most part, the missing values are also all related to footage, which may reflect differences on reporting for empty lots. Note - only the variables used for the results section are included.</p>
