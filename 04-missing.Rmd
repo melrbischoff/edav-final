@@ -1,6 +1,6 @@
 # Missing values
 
-First, there are many observations in the recycling dataset with the month field not populated. As the problem appears about the occur uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.
+First, there are many observations in the recycling dataset with the month field not populated. As the problem appears to occur virtually uniformly across boroughs and zones, we have opted to simply show the NA data in our later graph.
 
 As mentioned previously, the borough field was not populated for most observations in the key building energy use dataset, as shown below. The solution for this missing data was discussed previously: we map to a dataset on zipcode to fill the missing boroughs. 
 
